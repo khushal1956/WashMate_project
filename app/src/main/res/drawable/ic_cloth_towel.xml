@@ -1,0 +1,88 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Main towel body (rolled/folded) -->
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M12,14 L52,14 Q54,14 54,16 L54,50 Q54,52 52,52 L12,52 Q10,52 10,50 L10,16 Q10,14 12,14 Z" />
+    <!-- Towel roll top -->
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M10,14 Q10,8 32,8 Q54,8 54,14 Z" />
+    <!-- Roll inner shadow -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M14,14 Q14,10 32,10 Q50,10 50,14 Z" />
+    <!-- Stripe 1 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,22 L54,22 L54,26 L10,26 Z" />
+    <!-- Stripe 2 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,40 L54,40 L54,44 L10,44 Z" />
+    <!-- Texture lines -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="0.5"
+        android:pathData="M10,18 L54,18" />
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="0.5"
+        android:pathData="M10,30 L54,30" />
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="0.5"
+        android:pathData="M10,34 L54,34" />
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="0.5"
+        android:pathData="M10,48 L54,48" />
+    <!-- Fringe bottom -->
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M10,52 L54,52 L54,56 Q54,58 52,58 L12,58 Q10,58 10,56 Z" />
+    <!-- Fringe lines -->
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M14,52 L14,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M18,52 L18,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M22,52 L22,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M26,52 L26,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M30,52 L30,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M34,52 L34,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M38,52 L38,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M42,52 L42,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M46,52 L46,57" />
+    <path
+        android:strokeColor="#66BB6A"
+        android:strokeWidth="0.8"
+        android:pathData="M50,52 L50,57" />
+</vector>

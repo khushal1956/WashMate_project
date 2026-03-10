@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/WashMateCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header: Name, ID, Status -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvCustomerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customer Name"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvOrderId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Order #12345678"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+            
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="@drawable/status_badge_pending"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEE"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Details Grid -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="4">
+
+            <!-- Service -->
+            <TextView
+                android:text="Service"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="4dp"/>
+            <TextView
+                android:text="Pickup Date"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvServiceName"
+                android:text="Regular Wash"
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="12dp"/>
+            <TextView
+                android:id="@+id/tvPickupDate"
+                android:text="May 20, 2026"
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Items -->
+            <TextView
+                android:text="Items"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="4dp"/>
+             <TextView
+                android:text="Total"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvQuantity"
+                android:text="5 items"
+                android:textColor="@color/textPrimary"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="12dp"/>
+             <TextView
+                android:id="@+id/tvTotalAmount"
+                android:text="₹150"
+                android:textColor="@color/washmatePrimary"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="12dp"/>
+
+        </GridLayout>
+
+        <!-- Extra Details (Collapsible concept, but shown here) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F8F9FA"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp">
+             
+            <TextView
+                android:id="@+id/tvServiceType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Type: Express"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"/>
+             <TextView
+                android:id="@+id/tvItemDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2 Shirts, 3 Pants"
+                android:textSize="12sp"
+                android:textColor="@color/textPrimary"
+                android:layout_marginTop="2dp"/>
+             <TextView
+                android:id="@+id/tvPickupAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="123 Street Name, City"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="8dp"/>
+             <TextView
+                android:id="@+id/tvPaymentMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Payment: Online"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+
+        <!-- Actions -->
+        <LinearLayout
+            android:id="@+id/llActionButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReject"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Reject"
+                android:textColor="@color/statusRejected"
+                app:strokeColor="@color/statusRejected"
+                android:layout_marginEnd="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAccept"
+                style="@style/WashMateButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Accept"
+                app:backgroundTint="@color/statusCompleted"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llAssignButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAssign"
+                style="@style/WashMateButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Assign Staff"
+                app:icon="@android:drawable/ic_menu_my_calendar"
+                app:iconGravity="textStart"
+                app:backgroundTint="@color/washmatePrimary"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

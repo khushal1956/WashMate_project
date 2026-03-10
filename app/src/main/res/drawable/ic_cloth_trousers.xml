@@ -1,0 +1,56 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Waistband -->
+    <path
+        android:fillColor="#7A6B52"
+        android:pathData="M16,8 L48,8 Q49,8 49,10 L49,14 L15,14 L15,10 Q15,8 16,8 Z" />
+    <!-- Belt -->
+    <path
+        android:fillColor="#5C4A2D"
+        android:pathData="M15,10 L49,10 L49,12 L15,12 Z" />
+    <!-- Belt buckle -->
+    <path
+        android:fillColor="#C9A84C"
+        android:pathData="M30,9.5 L34,9.5 L34,12.5 L30,12.5 Z" />
+    <!-- Left leg -->
+    <path
+        android:fillColor="#C4A86B"
+        android:pathData="M15,14 L32,14 L31,56 Q31,58 29,58 L14,58 Q12,58 13,56 Z" />
+    <!-- Right leg -->
+    <path
+        android:fillColor="#C4A86B"
+        android:pathData="M49,14 L32,14 L33,56 Q33,58 35,58 L50,58 Q52,58 51,56 Z" />
+    <!-- Crease left -->
+    <path
+        android:strokeColor="#B39858"
+        android:strokeWidth="0.8"
+        android:pathData="M23,16 L21,58" />
+    <!-- Crease right -->
+    <path
+        android:strokeColor="#B39858"
+        android:strokeWidth="0.8"
+        android:pathData="M41,16 L43,58" />
+    <!-- Left pocket -->
+    <path
+        android:strokeColor="#B39858"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000"
+        android:pathData="M18,14 L18,20 Q19,22 25,18 L25,14" />
+    <!-- Right pocket -->
+    <path
+        android:strokeColor="#B39858"
+        android:strokeWidth="0.8"
+        android:fillColor="#00000000"
+        android:pathData="M46,14 L46,20 Q45,22 39,18 L39,14" />
+    <!-- Hem left -->
+    <path
+        android:fillColor="#B39858"
+        android:pathData="M13,55 L31,55 L31,58 Q31,58 29,58 L14,58 Q12,58 13,56 Z" />
+    <!-- Hem right -->
+    <path
+        android:fillColor="#B39858"
+        android:pathData="M33,55 L51,55 L51,58 Q51,58 50,58 L35,58 Q33,58 33,56 Z" />
+</vector>

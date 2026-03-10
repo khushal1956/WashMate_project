@@ -1,0 +1,57 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <!-- Waistband -->
+    <path
+        android:fillColor="#2C5F9E"
+        android:pathData="M16,8 L48,8 Q49,8 49,10 L49,14 L15,14 L15,10 Q15,8 16,8 Z" />
+    <!-- Belt -->
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M15,10 L49,10 L49,12 L15,12 Z" />
+    <!-- Belt buckle -->
+    <path
+        android:fillColor="#D4A017"
+        android:pathData="M30,9.5 L34,9.5 L34,12.5 L30,12.5 Z" />
+    <!-- Left leg -->
+    <path
+        android:fillColor="#3B7DD8"
+        android:pathData="M15,14 L32,14 L32,34 L30,56 Q30,58 28,58 L12,58 Q10,58 10,56 L15,34 Z" />
+    <!-- Right leg -->
+    <path
+        android:fillColor="#3B7DD8"
+        android:pathData="M49,14 L32,14 L32,34 L34,56 Q34,58 36,58 L52,58 Q54,58 54,56 L49,34 Z" />
+    <!-- Left pocket -->
+    <path
+        android:fillColor="#2C5F9E"
+        android:pathData="M18,14 L18,22 Q18,23 19,23 L26,20 L26,14 Z" />
+    <!-- Right pocket -->
+    <path
+        android:fillColor="#2C5F9E"
+        android:pathData="M46,14 L46,22 Q46,23 45,23 L38,20 L38,14 Z" />
+    <!-- Center seam -->
+    <path
+        android:strokeColor="#2C5F9E"
+        android:strokeWidth="1"
+        android:pathData="M32,14 L32,34" />
+    <!-- Left leg seam -->
+    <path
+        android:strokeColor="#2C5F9E"
+        android:strokeWidth="0.5"
+        android:pathData="M22,14 L20,58" />
+    <!-- Right leg seam -->
+    <path
+        android:strokeColor="#2C5F9E"
+        android:strokeWidth="0.5"
+        android:pathData="M42,14 L44,58" />
+    <!-- Hem left -->
+    <path
+        android:fillColor="#5BA0E9"
+        android:pathData="M10,55 L30,55 L30,58 Q30,58 28,58 L12,58 Q10,58 10,56 Z" />
+    <!-- Hem right -->
+    <path
+        android:fillColor="#5BA0E9"
+        android:pathData="M34,55 L54,55 L54,58 Q54,58 52,58 L36,58 Q34,58 34,56 Z" />
+</vector>

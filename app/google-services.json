@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "325513041763",
+    "project_id": "washmate-laundary",
+    "storage_bucket": "washmate-laundary.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325513041763:android:b2d77940ee0fe01f21a556",
+        "android_client_info": {
+          "package_name": "com.example.washmate_laundary_service"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDv1RvTYKzU0hhlADo7jS45z4dR1QZhOws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

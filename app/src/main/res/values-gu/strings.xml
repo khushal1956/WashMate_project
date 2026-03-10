@@ -1,0 +1,160 @@
+<resources>
+    <string name="app_name">વોશમેટ લોન્ડ્રી સર્વિસ</string>
+    
+    <!-- General -->
+    <string name="login">લોગિન</string>
+    <string name="logout">લોગ આઉટ</string>
+    <string name="register">રજીસ્ટર</string>
+    <string name="submit">સબમિટ કરો</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>हिंदी</item>
+        <item>ગુજરાતી</item>
+        <item>मराठी</item>
+    </string-array>
+    <string name="cancel">રદ કરો</string>
+    <string name="save">સેવ કરો</string>
+    <string name="back">પાછા</string>
+    <string name="next">આગળ</string>
+
+    <!-- Login Screen -->
+    <string name="welcome_back">પાછા સ્વાગત છે,</string>
+    <string name="sign_in_text">તમારા ખાતામાં સાઇન ઇન કરો</string>
+    <string name="email_hint">ઇમેઇલ સરનામું</string>
+    <string name="password_hint">પાસવર્ડ</string>
+    <string name="forgot_password">પાસવર્ડ ભૂલી ગયા?</string>
+    <string name="get_started">શરૂ કરો</string>
+    <string name="register_text">ખાતું નથી? સાઇન અપ કરો</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">હોમ</string>
+    <string name="nav_orders">ઓર્ડર્સ</string>
+    <string name="nav_profile">પ્રોફાઇલ</string>
+    <string name="nav_support">સહાય</string>
+    
+    <!-- Dashboard -->
+    <string name="greeting_format">નમસ્તે, %1$s!</string>
+    <string name="laundry_services">લોન્ડ્રી સેવાઓ</string>
+    <string name="service_washing">વોશિંગ</string>
+    <string name="service_dry_clean">ડ્રાય ક્લીન</string>
+    <string name="service_ironing">ઇસ્ત્રી</string>
+    <string name="service_premium">પ્રીમિયમ કેર</string>
+    
+    <!-- Profile -->
+    <string name="title_profile">મારી પ્રોફાઇલ</string>
+    <string name="change_email">ઇમેઇલ બદલો</string>
+    <string name="change_password">પાસવર્ડ બદલો</string>
+    <string name="update_email">ઇમેઇલ અપડેટ કરો</string>
+    <string name="update_password">પાસવર્ડ અપડેટ કરો</string>
+    <string name="current_password">વર્તમાન પાસવર્ડ</string>
+    <string name="new_password">નવો પાસવર્ડ</string>
+    <string name="confirm_new_password">નવા પાસવર્ડની પુષ્ટિ કરો</string>
+    <string name="new_email">નવું ઇમેઇલ સરનામું</string>
+    
+    <!-- Language -->
+    <string name="change_language">ભાષા બદલો</string>
+    <string name="select_language">ભાષા પસંદ કરો</string>
+    <string name="lang_en">English</string>
+    <string name="lang_hi">Hindi (हिंदी)</string>
+    <string name="lang_gu">Gujarati (ગુજરાતી)</string>
+    <string name="lang_mr">Marathi (मराठी)</string>
+    
+    <!-- Registration -->
+    <string name="join_us">અમારી સાથે જોડાઓ</string>
+    <string name="registration_subtitle">લોન્ડ્રી કેરનો અનુભવ લો</string>
+    <string name="full_name">પૂરું નામ</string>
+    <string name="mobile_number">મોબાઇલ નંબર</string>
+    <string name="home_address">ઘરનું સરનામું</string>
+    <string name="confirm_password">પાસવર્ડની પુષ્ટિ કરો</string>
+    <string name="create_account">ખાતું બનાવો</string>
+    <string name="already_registered">પહેલેથી જ નોંધાયેલ છો? સાઇન ઇન કરો</string>
+
+    <!-- Services -->
+    <string name="dry_clean_desc">પ્રોફેશનલ ડ્રાય ક્લીનિંગ સેવાઓ</string>
+    <string name="item_suit">સૂટ ડ્રાય ક્લીન</string>
+    <string name="item_suit_desc">પ્રોફેશનલ સૂટ સફાઈ</string>
+    <string name="item_dress">ડ્રેસ ડ્રાય ક્લીન</string>
+    <string name="item_dress_desc">નાજુક ડ્રેસની સંભાળ</string>
+
+    <string name="ironing_desc">કરચલી રહિત કપડાં</string>
+    <string name="item_regular_ironing">નિયમિત ઇસ્ત્રી</string>
+    <string name="item_regular_ironing_desc">સ્ટાન્ડર્ડ ઇસ્ત્રી સેવા</string>
+    <string name="item_premium_ironing">પ્રીમિયમ ઇસ્ત્રી</string>
+    <string name="item_premium_ironing_desc">ફોર્મલ વેર માટે સ્ટીમ ઇસ્ત્રી</string>
+
+    <string name="premium_desc">તમારા શ્રેષ્ઠ વસ્ત્રો માટે લક્ઝરી કેર</string>
+    <string name="item_premium_wash">પ્રીમિયમ વોશ અને ફોલ્ડ</string>
+    <string name="item_premium_wash_desc">લક્ઝરી ડિટર્જન્ટ, હાથથી ફોલ્ડ કરેલું</string>
+    <string name="item_designer_care">ડિઝાઇનર ગારમેન્ટ કેર</string>
+    <string name="item_designer_care_desc">ડિઝાઇનર વસ્ત્રો માટે વિશેષ સંભાળ</string>
+    <string name="item_express_premium">એક્સપ્રેસ પ્રીમિયમ સેવા</string>
+    <string name="item_express_premium_desc">4 કલાકનો સમય</string>
+
+    <!-- Customer Orders -->
+    <string name="my_orders_title">મારા ઓર્ડર્સ</string>
+    <string name="my_orders_subtitle">તમારા લોન્ડ્રી ઓર્ડર્સ ટ્રૅક કરો</string>
+    <string name="no_orders_found">હજુ સુધી કોઈ ઓર્ડર નથી</string>
+    <string name="no_orders_subtitle">તમારો ઓર્ડર ઇતિહાસ અહીં દેખાશે</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard_title">વોશમેટ હબ</string>
+    <string name="admin_dashboard_subtitle">લોન્ડ્રી વર્કફ્લો મેનેજમેન્ટ</string>
+    <string name="btn_manage_orders">ઓર્ડર મેનેજ કરો</string>
+    <string name="btn_team">ટીમ</string>
+    <string name="btn_suite">સ્યુટ</string>
+    
+    <!-- Admin Orders -->
+    <string name="admin_orders_title">ઓર્ડર મેનેજમેન્ટ</string>
+    <string name="admin_orders_subtitle">ગ્રાહકના ઓર્ડર મેનેજ કરો</string>
+
+    <!-- Manage Services -->
+    <string name="manage_services_title">સર્વિસ સ્યુટ</string>
+    <string name="manage_services_subtitle">પ્રીમિયમ કેર કેટલોગ રિફાઇનિંગ</string>
+    <string name="no_services_found">હજી સુધી કોઈ સેવાઓ આપવામાં આવી નથી</string>
+    <string name="new_service_title">નવી કેર</string>
+    <string name="service_availability">ઉપલબ્ધતા</string>
+    <string name="publish_service">સર્વિસ પબ્લિશ કરો</string>
+
+    <!-- Manage Staff -->
+    <string name="manage_staff_title">અમારા નિષ્ણાતો</string>
+    <string name="manage_staff_subtitle">પ્રીમિયમ કેર ટીમનું સંચાલન</string>
+    <string name="no_staff_found">હજુ સુધી કોઈ નિષ્ણાતો ઉમેરવામાં આવ્યા નથી</string>
+    <string name="add_staff_title">નવા એક્સપર્ટ</string>
+    <string name="staff_specialization">નિપુણતા</string>
+    <string name="onboard_specialist">સ્પેશિયાલિસ્ટને ઓનબોર્ડ કરો</string>
+    
+    <!-- Common -->
+    <string name="status_active">સક્રિય</string>
+    
+    <!-- Support -->
+    <string name="title_support">સપોર્ટ ટીમ</string>
+    <string name="support_subtitle">અમે તમારી મદદ માટે અહીં છીએ</string>
+    <string name="contact_us">અમારો સંપર્ક કરો</string>
+    <string name="support_intro">જો તમને લોન્ડ્રી સર્વિસ એપ્લિકેશનનો ઉપયોગ કરતી વખતે કોઈ સમસ્યા આવે છે, જેમ કે ઓર્ડર બુકિંગ સમસ્યાઓ, ચુકવણી ભૂલો, ઓર્ડર ટ્રેકિંગ સમસ્યાઓ અથવા એકાઉન્ટ લોગિન મુશ્કેલીઓ, તો કૃપા કરીને અમારી સહાયતા ટીમનો સંપર્ક કરો. અમે ઝડપી સહાય અને સરળ વપરાશકર્તા અનુભવ પ્રદાન કરવા માટે પ્રતિબદ્ધ છીએ.</string>
+
+    <!-- Washing Service -->
+    <string name="washing_desc">ફ્રેશ અને ક્લીન લોન્ડ્રી સેવાઓ</string>
+    <string name="item_regular_wash">નિયમિત વોશ</string>
+    <string name="item_regular_wash_desc">સ્ટાન્ડર્ડ વોશિંગ સેવા</string>
+    <string name="item_delicate_wash">નાજુક વોશ</string>
+    <string name="item_delicate_wash_desc">નાજુક કપડાં માટે સૌમ્ય સંભાળ</string>
+    <string name="item_express_wash">એક્સપ્રેસ વોશ</string>
+    <string name="item_express_wash_desc">તે જ દિવસે સેવા ઉપલબ્ધ છે</string>
+
+    <!-- Staff Dashboard -->
+    <string name="title_my_tasks">મારું કામ</string>
+    <string name="welcome_staff">સ્વાગત છે, સ્ટાફ</string>
+    <string name="no_assigned_tasks">હજુ સુધી કોઈ કામ સોંપવામાં આવ્યું નથી</string>
+    
+    <!-- Staff Order Item -->
+    <string name="label_items">કપડાં:</string>
+    <string name="label_pickup">પિકઅપ:</string>
+    <string name="label_date">તારીખ:</string>
+    <string name="btn_mark_completed">કામ પૂર્ણ થયું</string>
+    <string name="btn_start_processing">પ્રક્રિયા શરૂ કરો</string>
+    <string name="btn_mark_delivered">વિતરિત તરીકે ચિહ્નિત કરો</string>
+    
+    <!-- Accessibility -->
+    <string name="desc_logout">લોગ આઉટ</string>
+    <string name="desc_waving_hand">હાથ હલાવવો</string>
+</resources>

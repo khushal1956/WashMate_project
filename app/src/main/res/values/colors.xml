@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- WashMate Brand Colors -->
+    <color name="washmatePrimary">#2563EB</color> <!-- Soft Blue -->
+    <color name="washmatePrimaryDark">#1D4ED8</color>
+    <color name="washmateAccent">#60A5FA</color>
+    <color name="washmateBg">#F8FAFC</color> <!-- Slate 50 - Clean White/Grey -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    
+    <!-- Status Colors -->
+    <color name="statusCompleted">#4CAF50</color> <!-- Green -->
+    <color name="statusPending">#FFC107</color> <!-- Yellow -->
+    <color name="statusRejected">#EF4444</color> <!-- Red -->
+    <color name="statusTextWhite">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="textPrimary">#1E293B</color> <!-- Slate 800 -->
+    <color name="textSecondary">#64748B</color> <!-- Slate 500 -->
+    <color name="textHint">#94A3B8</color> <!-- Slate 400 -->
+
+    <!-- Legacy Mappings for compatibility -->
+    <color name="colorPrimary">@color/washmatePrimary</color>
+    <color name="colorPrimaryDark">@color/washmatePrimaryDark</color>
+    <color name="colorAccent">@color/washmateAccent</color>
+    
+    <!-- Required by existing themes/layouts potentially -->
+    <color name="desertPrimary">@color/washmatePrimary</color>
+    <color name="desertSecondary">@color/washmateAccent</color>
+    <color name="desertBg">@color/washmateBg</color>
+    <color name="desertDark">@color/washmatePrimaryDark</color>
+
+    <color name="glassWhite">#F0FFFFFF</color>
+    <color name="glassStroke">#1A000000</color>
+    <color name="glassCardBg">@color/white</color>
+
+    <!-- Recovered / Mapped Colors for Fix -->
+    <color name="gradient_start">@color/washmatePrimary</color>
+    <color name="gradient_end">@color/washmateAccent</color>
+    <color name="glassChipBg">#20FFFFFF</color>
+    <color name="glassChipStroke">#40FFFFFF</color>
+    <color name="promoGradientStart">#FFD700</color>
+    <color name="promoGradientEnd">#FFA000</color>
+    <color name="backgroundColor">@color/washmateBg</color>
+    <color name="slatePrimary">@color/textPrimary</color>
+    <color name="textColorPrimary">@color/textPrimary</color>
+    <color name="textColorSecondary">@color/textSecondary</color>
+    <color name="cat_premium">#8B5CF6</color>
+    <color name="lavender_blue">#E0E7FF</color>
+    <color name="light_gray">#E0E0E0</color>
+</resources>

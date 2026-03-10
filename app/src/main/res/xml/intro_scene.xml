@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- State 1: Start (Logo Small/Invisible) -->
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@+id/bagView">
+            <Layout
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:layout_marginTop="60dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <PropertySet android:alpha="0" />
+            <Transform
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
+        </Constraint>
+        <Constraint android:id="@+id/tvAppName">
+            <PropertySet android:alpha="0" />
+            <Transform android:translationY="20dp" />
+        </Constraint>
+        <Constraint android:id="@+id/tvAppSubtitle">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+        <Constraint android:id="@+id/cardLogin">
+            <PropertySet android:alpha="0" />
+            <Transform
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:translationY="100dp" />
+        </Constraint>
+    </ConstraintSet>
+
+    <!-- State 2: Logo Focus -->
+    <ConstraintSet android:id="@+id/logoFocus" app:deriveConstraintsFrom="@id/start">
+        <Constraint android:id="@+id/bagView">
+            <PropertySet android:alpha="1" />
+            <Transform
+                android:scaleX="1.0"
+                android:scaleY="1.0" />
+        </Constraint>
+        <Constraint android:id="@+id/tvAppName">
+             <PropertySet android:alpha="1" />
+             <Transform android:translationY="0dp" />
+        </Constraint>
+        <Constraint android:id="@+id/tvAppSubtitle">
+             <PropertySet android:alpha="1" />
+        </Constraint>
+        <Constraint android:id="@+id/btnIntroNext">
+             <PropertySet android:alpha="1" />
+        </Constraint>
+    </ConstraintSet>
+
+    <!-- State 3: Transform to Login UI -->
+    <ConstraintSet android:id="@+id/loginVisible" app:deriveConstraintsFrom="@id/logoFocus">
+        <Constraint android:id="@+id/bagView">
+            <Layout
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toTopOf="@id/cardLogin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <Transform
+                android:scaleX="1.0"
+                android:scaleY="1.0"
+                android:translationY="0dp" />
+            <PropertySet android:alpha="1" />
+        </Constraint>
+        <Constraint android:id="@+id/tvAppName">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+        <Constraint android:id="@+id/tvAppSubtitle">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+        <Constraint android:id="@+id/headerBackgroundOverlay">
+            <PropertySet android:alpha="0.3" />
+        </Constraint>
+        <Constraint android:id="@+id/cardLogin">
+            <PropertySet android:alpha="1" />
+            <Transform
+                android:scaleX="1.0"
+                android:scaleY="1.0"
+                android:translationY="0dp" />
+        </Constraint>
+        <Constraint android:id="@+id/btnIntroNext">
+            <PropertySet android:alpha="0" />
+            <Transform android:scaleX="0.5" android:scaleY="0.5" />
+        </Constraint>
+    </ConstraintSet>
+
+    <!-- State 4: Login Success Feedback -->
+    <ConstraintSet android:id="@+id/loginSuccess" app:deriveConstraintsFrom="@id/loginVisible">
+        <Constraint android:id="@+id/cardLogin">
+            <PropertySet android:alpha="0" />
+            <Transform
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
+        </Constraint>
+        <Constraint android:id="@+id/btnIntroNext">
+            <PropertySet android:alpha="0" />
+            <Transform android:scaleX="0.8" android:scaleY="0.8" />
+        </Constraint>
+        <Constraint android:id="@+id/bagView">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+        <Constraint android:id="@+id/successOverlay">
+            <PropertySet android:alpha="1" />
+            <Transform
+                android:scaleX="1.0"
+                android:scaleY="1.0" />
+        </Constraint>
+    </ConstraintSet>
+
+    <!-- Transitions -->
+    <Transition
+        android:id="@+id/showLogo"
+        app:constraintSetEnd="@id/logoFocus"
+        app:constraintSetStart="@id/start"
+        app:duration="1200" />
+
+    <Transition
+        android:id="@+id/transformToLogin"
+        app:constraintSetEnd="@id/loginVisible"
+        app:constraintSetStart="@id/logoFocus"
+        app:duration="1000" />
+
+    <Transition
+        android:id="@+id/showSuccess"
+        app:constraintSetEnd="@id/loginSuccess"
+        app:constraintSetStart="@id/loginVisible"
+        app:duration="800" />
+
+</MotionScene>

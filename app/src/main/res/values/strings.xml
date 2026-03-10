@@ -1,0 +1,158 @@
+<resources>
+    <string name="app_name">WashMate Laundary Service</string>
+    
+    <!-- General -->
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="register">Register</string>
+    <string name="submit">Submit</string>
+    <string-array name="languages">
+        <item>English</item>
+        <item>हिंदी</item>
+        <item>ગુજરાતી</item>
+        <item>मराठी</item>
+    </string-array>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+
+    <!-- Login Screen -->
+    <string name="welcome_back">Welcome Back,</string>
+    <string name="sign_in_text">Sign in to your account</string>
+    <string name="email_hint">Email Address</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="get_started">GET STARTED</string>
+    <string name="register_text">Don\'t have an account? Sign Up</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_support">Support</string>
+    
+    <!-- Dashboard -->
+    <string name="greeting_format">Hello, %1$s!</string>
+    <string name="laundry_services">Laundry Services</string>
+    <string name="service_washing">Washing</string>
+    <string name="service_dry_clean">Dry Clean</string>
+    <string name="service_ironing">Ironing</string>
+    <string name="service_premium">Premium Care</string>
+    
+    <!-- Profile -->
+    <string name="title_profile">My Profile</string>
+    <string name="change_email">Change Email</string>
+    <string name="change_password">Change Password</string>
+    <string name="update_email">UPDATE EMAIL</string>
+    <string name="update_password">UPDATE PASSWORD</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="new_email">New Email Address</string>
+    
+    <!-- Language -->
+    <string name="change_language">Change Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="lang_en">English</string>
+    <string name="lang_hi">Hindi (हिंदी)</string>
+    <string name="lang_gu">Gujarati (ગુજરાતી)</string>
+    <string name="lang_mr">Marathi (मराठी)</string>
+    
+    <!-- Registration -->
+    <string name="join_us">Join Us</string>
+    <string name="registration_subtitle">Experience laundry care</string>
+    <string name="full_name">Full Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="home_address">Home Address</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_account">CREATE ACCOUNT</string>
+    <string name="already_registered">Already high-end? Sign In</string>
+
+    <!-- Services -->
+    <string name="dry_clean_desc">Professional dry cleaning services</string>
+    <string name="item_suit">Suit Dry Clean</string>
+    <string name="item_suit_desc">Professional suit cleaning</string>
+    <string name="item_dress">Dress Dry Clean</string>
+    <string name="item_dress_desc">Delicate dress care</string>
+
+    <string name="ironing_desc">Crisp and wrinkle-free clothes</string>
+    <string name="item_regular_ironing">Regular Ironing</string>
+    <string name="item_regular_ironing_desc">Standard ironing service</string>
+    <string name="item_premium_ironing">Premium Ironing</string>
+    <string name="item_premium_ironing_desc">Steam ironing for formal wear</string>
+
+    <string name="premium_desc">Luxury care for your finest garments</string>
+    <string name="item_premium_wash">Premium Wash &amp; Fold</string>
+    <string name="item_premium_wash_desc">Luxury detergent, hand-folded</string>
+    <string name="item_designer_care">Designer Garment Care</string>
+    <string name="item_designer_care_desc">Special care for designer wear</string>
+    <string name="item_express_premium">Express Premium Service</string>
+    <string name="item_express_premium_desc">4-hour turnaround time</string>
+
+    <!-- Customer Orders -->
+    <string name="my_orders_title">My Orders</string>
+    <string name="my_orders_subtitle">Track your laundry orders</string>
+    <string name="no_orders_found">No orders yet</string>
+    <string name="no_orders_subtitle">Your order history will appear here</string>
+
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard_title">WashMate Hub</string>
+    <string name="admin_dashboard_subtitle">Managing laundry workflow</string>
+    <string name="btn_manage_orders">Manage Orders</string>
+    <string name="btn_team">Team</string>
+    <string name="btn_suite">Suite</string>
+    
+    <!-- Admin Orders -->
+    <string name="admin_orders_title">Order Management</string>
+    <string name="admin_orders_subtitle">Manage customer orders</string>
+
+    <!-- Manage Services -->
+    <string name="manage_services_title">Service Suite</string>
+    <string name="manage_services_subtitle">Refining premium care catalog</string>
+    <string name="no_services_found">No services offered yet</string>
+    <string name="new_service_title">New Care</string>
+    <string name="service_availability">Availability</string>
+    <string name="publish_service">PUBLISH SERVICE</string>
+
+    <!-- Manage Staff -->
+    <string name="manage_staff_title">Our Specialists</string>
+    <string name="manage_staff_subtitle">Managing premium care team</string>
+    <string name="no_staff_found">No specialists added yet</string>
+    <string name="add_staff_title">New Expert</string>
+    <string name="staff_specialization">Specialization</string>
+    <string name="onboard_specialist">ONBOARD SPECIALIST</string>
+    
+    <!-- Common -->
+    <string name="status_active">ACTIVE</string>
+    
+    <!-- Support -->
+    <string name="title_support">Support Team</string>
+    <string name="support_subtitle">We are here to help you</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="support_intro">If you face any issues while using the Laundry Service application, such as order booking problems, payment errors, order tracking issues, or account login difficulties, please feel free to contact our support team. We are committed to providing quick assistance and ensuring a smooth user experience.</string>
+    <!-- Washing Service -->
+    <string name="washing_desc">Fresh and clean laundry services</string>
+    <string name="item_regular_wash">Regular Wash</string>
+    <string name="item_regular_wash_desc">Standard washing service</string>
+    <string name="item_delicate_wash">Delicate Wash</string>
+    <string name="item_delicate_wash_desc">Gentle care for delicate fabrics</string>
+    <string name="item_express_wash">Express Wash</string>
+    <string name="item_express_wash_desc">Same day service available</string>
+    <!-- Staff Dashboard -->
+    <string name="title_my_tasks">My Tasks</string>
+    <string name="welcome_staff">Welcome, Staff</string>
+    <string name="no_assigned_tasks">No assigned tasks yet</string>
+    
+    <!-- Staff Order Item -->
+    <string name="label_items">Items:</string>
+    <string name="label_pickup">Pickup:</string>
+    <string name="label_date">Date:</string>
+    <string name="btn_mark_completed">Mark as Completed</string>
+    <string name="btn_start_processing">Start Processing</string>
+    <string name="btn_mark_delivered">Mark as Delivered</string>
+    
+    <!-- Accessibility -->
+    <string name="desc_logout">Logout</string>
+    <string name="desc_waving_hand">Waving hand</string>
+</resources>

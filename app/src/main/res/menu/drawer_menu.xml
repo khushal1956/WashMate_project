@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_vector"
+            android:title="Home" />
+        
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile_vector"
+            android:title="Profile" />
+
+        <item
+            android:id="@+id/nav_my_orders"
+            android:icon="@drawable/ic_orders_vector"
+            android:title="My Orders" />
+            
+        <item
+            android:id="@+id/nav_clothing_selection"
+            android:icon="@drawable/ic_laundry_service" 
+            android:title="New Order" />
+    </group>
+
+    <item android:title="App">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_support"
+                android:icon="@drawable/ic_support_vector"
+                android:title="Support" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>
