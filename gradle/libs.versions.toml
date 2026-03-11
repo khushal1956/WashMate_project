@@ -12,6 +12,7 @@ firebaseBom = "33.9.0"
 lottie = "6.0.0"
 playServicesMaps = "18.2.0"
 playServicesLocation = "21.0.1"
+firebaseStorage = "22.0.1"
 
 
 [libraries]
@@ -28,6 +29,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 lottie = { group = "com.airbnb.android", name = "lottie", version.ref = "lottie" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 
 
 [plugins]

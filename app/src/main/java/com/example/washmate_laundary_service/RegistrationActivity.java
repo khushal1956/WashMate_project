@@ -172,8 +172,14 @@ public class RegistrationActivity extends BaseActivity {
     }
 
     private void registerUser() {
-        if (etFullName == null || etEmail == null || etMobile == null || etAddress == null ||
+        if (etFullName == null || etEmail == null || etEmail == null || etMobile == null || etAddress == null ||
             etPassword == null) {
+            return;
+        }
+
+        // --- Network Pre-check ---
+        if (!com.example.washmate_laundary_service.utils.NetworkUtils.isNetworkAvailable(this)) {
+            showConnectionTroubleshooter("No internet connection detected. Please enable Wi-Fi or Mobile Data.");
             return;
         }
 
@@ -198,15 +204,35 @@ public class RegistrationActivity extends BaseActivity {
                             } else {
                                 btnRegister.setEnabled(true);
                                 btnRegister.setText("Register");
+                                Toast.makeText(RegistrationActivity.this, "Authentication error: User null", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             // If registration fails, display a message to the user.
                             btnRegister.setEnabled(true);
                             btnRegister.setText("Register");
-                            String error = task.getException() != null ? task.getException().getMessage() : "Unknown authentication error";
+                            Exception e = task.getException();
+                            String error = e != null ? e.getMessage() : "Unknown authentication error";
+                            
+                            if (e instanceof com.google.firebase.FirebaseNetworkException) {
+                                showConnectionTroubleshooter("Could not reach authentication server. This usually means the device has no internet or Firebase is blocked.");
+                            } else {
+                                Toast.makeText(RegistrationActivity.this, "Registration Failed: " + error, Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 });
+    }
+
+    private void showConnectionTroubleshooter(String message) {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Network Connection Issue")
+                .setMessage(message + "\n\nTroubleshooting Steps:\n1. Open your browser and check if google.com opens.\n2. Ensure Google Play Services is enabled.\n3. If using an Emulator, restart the Emulator with 'Cold Boot'.\n4. Check if your firewall is blocking Firebase.")
+                .setPositiveButton("Retry", (dialog, which) -> registerUser())
+                .setNegativeButton("Check Settings", (dialog, which) -> {
+                    startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+                })
+                .setNeutralButton("Cancel", null)
+                .show();
     }
 
     private void saveUserToFirestore(String userId, String fullName, String email, String mobile, String address) {
@@ -224,21 +250,27 @@ public class RegistrationActivity extends BaseActivity {
                         if (task.isSuccessful()) {
                             saveAddressToFirestore(userId, address);
                         } else {
-                            handleFirestoreError(task.getException());
+                            handleFirestoreError(task.getException(), "saving profile");
                         }
                     }
                 });
     }
 
-    private void handleFirestoreError(Exception e) {
+    private void handleFirestoreError(Exception e, String context) {
         btnRegister.setEnabled(true);
         btnRegister.setText("Register");
-        String error = e != null ? e.getMessage() : "Database error";
+        String errorMsg = e != null ? e.getMessage() : "Unknown error";
+        
+        if (errorMsg != null && errorMsg.toLowerCase().contains("network")) {
+            showConnectionTroubleshooter("Connection timeout while " + context + ". The database is currently unreachable.");
+        } else {
+            Toast.makeText(this, "Database Error during " + context + ": " + errorMsg, Toast.LENGTH_LONG).show();
+        }
     }
 
-    private void navigateToLogin() {
-        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+    private void navigateToHome() {
+        Intent intent = new Intent(RegistrationActivity.this, CustomerDashboardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
@@ -253,11 +285,14 @@ public class RegistrationActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            navigateToLogin();
+                            Toast.makeText(RegistrationActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                            navigateToHome();
                         } else {
                             // Even if address fails, the user is created, but we should notify
                             btnRegister.setEnabled(true);
                             btnRegister.setText("Register");
+                            Toast.makeText(RegistrationActivity.this, "User created but failed to save address.", Toast.LENGTH_SHORT).show();
+                            navigateToHome(); // Still navigate since account exists
                         }
                     }
                 });

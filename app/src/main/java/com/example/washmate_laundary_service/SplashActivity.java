@@ -33,7 +33,7 @@ public class SplashActivity extends BaseActivity {
                         }
 
                         // 2. Check if Staff
-                        db.collection("STAFF").document(uid).get()
+                        db.collection(com.example.washmate_laundary_service.utils.FirebaseConstants.COLLECTION_STAFF).document(uid).get()
                                 .addOnSuccessListener(staffSnap -> {
                                     if (staffSnap.exists()) {
                                         startActivity(new Intent(SplashActivity.this, StaffDashboardActivity.class));
@@ -41,19 +41,33 @@ public class SplashActivity extends BaseActivity {
                                         return;
                                     }
 
-                                    // 3. Default to Customer
-                                    startActivity(new Intent(SplashActivity.this, CustomerDashboardActivity.class));
-                                    finish();
+                                    // 3. Check if Customer
+                                    db.collection(com.example.washmate_laundary_service.utils.FirebaseConstants.COLLECTION_CUSTOMERS).document(uid).get()
+                                            .addOnSuccessListener(customerSnap -> {
+                                                if (customerSnap.exists()) {
+                                                    startActivity(new Intent(SplashActivity.this, CustomerDashboardActivity.class));
+                                                    finish();
+                                                } else {
+                                                    // User authenticated but no profile found, send to login/registration
+                                                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                                    finish();
+                                                }
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                // Error fetching customer profile (likely network)
+                                                startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                                                finish();
+                                            });
                                 })
                                 .addOnFailureListener(e -> {
-                                    // Fallback to Customer or Login on error, just to not block
-                                    startActivity(new Intent(SplashActivity.this, CustomerDashboardActivity.class));
+                                    // Fallback to Login on error
+                                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                                     finish();
                                 });
                     })
                     .addOnFailureListener(e -> {
-                         // Fallback
-                        startActivity(new Intent(SplashActivity.this, CustomerDashboardActivity.class));
+                         // Fallback to Login
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         finish();
                     });
         } else {

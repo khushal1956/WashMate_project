@@ -17,7 +17,16 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.washmate_laundary_service.utils.FirebaseConstants;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends BaseActivity {
 
@@ -25,11 +34,20 @@ public class LoginActivity extends BaseActivity {
     private android.widget.TextView tvForgotPassword;
     private android.widget.Button buttonLogin;
     private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        androidx.activity.EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainLayout), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         buttonLogin = findViewById(R.id.btnLogin);
         etEmail = findViewById(R.id.etEmail);
@@ -47,9 +65,9 @@ public class LoginActivity extends BaseActivity {
         android.widget.ArrayAdapter<CharSequence> adapter = android.widget.ArrayAdapter.createFromResource(
                 this,
                 R.array.languages,
-                android.R.layout.simple_spinner_item
+                R.layout.spinner_item_glass
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item_glass);
         spinnerLanguage.setAdapter(adapter);
 
         // Set current selection
@@ -107,6 +125,57 @@ public class LoginActivity extends BaseActivity {
                 startActivity(intent);
             });
         }
+
+        // --- Google Sign-In Setup ---
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        View btnGoogle = findViewById(R.id.btnGoogle);
+        if (btnGoogle != null) {
+            btnGoogle.setOnClickListener(v -> signInWithGoogle());
+        }
+
+        View btnApple = findViewById(R.id.btnApple);
+        if (btnApple != null) {
+            btnApple.setOnClickListener(v -> Toast.makeText(this, "Apple Sign-In coming soon!", Toast.LENGTH_SHORT).show());
+        }
+    }
+
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                Toast.makeText(this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        if (buttonLogin != null) buttonLogin.setEnabled(false);
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnSuccessListener(authResult -> {
+                    checkUserRoleAndNavigate(authResult.getUser().getUid());
+                })
+                .addOnFailureListener(e -> {
+                    if (buttonLogin != null) buttonLogin.setEnabled(true);
+                    Toast.makeText(LoginActivity.this, "Authentication Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     private boolean validateLoginInput(String email, String password) {
@@ -142,25 +211,41 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void performLogin(String email, String password) {
-        // Static Admin Login
+        // ── Offline Admin Login ──────────────────────────────────────────
+        // No Firebase call needed. If credentials match, go straight to dashboard.
         if (email.equals("admin@gmail.com") && password.equals("admin123")) {
-            handleAdminLogin(email, password);
+            navigateToAdminDashboard();
             return;
         }
-        
+
         // Firebase Login for regular users
         if (buttonLogin != null) buttonLogin.setEnabled(false);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    checkUserRoleAndNavigate(authResult.getUser().getUid());
+                    if (authResult.getUser() != null) {
+                        checkUserRoleAndNavigate(authResult.getUser().getUid());
+                    } else {
+                        if (buttonLogin != null) buttonLogin.setEnabled(true);
+                        Toast.makeText(LoginActivity.this, "Authentication failed: User null", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> {
                     if (buttonLogin != null) buttonLogin.setEnabled(true);
-                    String errorMsg = e.getMessage();
-                    if (errorMsg != null && (errorMsg.contains("network") || errorMsg.contains("NETWORK"))) {
-                        Toast.makeText(LoginActivity.this, "Network error. Please check your internet connection and try again.", Toast.LENGTH_LONG).show();
+                    if (e instanceof FirebaseNetworkException) {
+                        Toast.makeText(LoginActivity.this, "Network Error: No internet connection. Please check your network and try again.", Toast.LENGTH_LONG).show();
+                    } else if (e instanceof com.google.firebase.auth.FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(LoginActivity.this, "Incorrect email or password. Please try again.", Toast.LENGTH_LONG).show();
+                    } else if (e instanceof com.google.firebase.auth.FirebaseAuthInvalidUserException) {
+                        Toast.makeText(LoginActivity.this, "No account found with this email. Please sign up first.", Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Login failed: " + errorMsg, Toast.LENGTH_SHORT).show();
+                        String errorMsg = e.getMessage();
+                        if (errorMsg != null && (errorMsg.toLowerCase().contains("network") || errorMsg.toLowerCase().contains("unavailable") || errorMsg.toLowerCase().contains("offline"))) {
+                            Toast.makeText(LoginActivity.this, "Connection Error: Please check your internet connection.", Toast.LENGTH_LONG).show();
+                        } else if (errorMsg != null && (errorMsg.contains("credential") || errorMsg.contains("INVALID_LOGIN_CREDENTIALS"))) {
+                            Toast.makeText(LoginActivity.this, "Incorrect email or password. Please try again.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Login failed: " + (errorMsg != null ? errorMsg : "Unknown error"), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
@@ -177,7 +262,7 @@ public class LoginActivity extends BaseActivity {
                     }
                     
                     // 2. Check if Staff
-                    db.collection("STAFF").document(uid).get()
+                    db.collection(FirebaseConstants.COLLECTION_STAFF).document(uid).get()
                             .addOnSuccessListener(staffSnap -> {
                                 if (staffSnap.exists()) {
                                     startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
@@ -185,9 +270,23 @@ public class LoginActivity extends BaseActivity {
                                     return;
                                 }
                                 
-                                // 3. Default to Customer
-                                startActivity(new Intent(LoginActivity.this, CustomerDashboardActivity.class));
-                                finish();
+                                // 3. Check if Customer
+                                db.collection(FirebaseConstants.COLLECTION_CUSTOMERS).document(uid).get()
+                                        .addOnSuccessListener(customerSnap -> {
+                                            if (customerSnap.exists()) {
+                                                startActivity(new Intent(LoginActivity.this, CustomerDashboardActivity.class));
+                                                finish();
+                                            } else {
+                                                if (buttonLogin != null) buttonLogin.setEnabled(true);
+                                                Toast.makeText(LoginActivity.this, "Account found but no profile data. Please contact support.", Toast.LENGTH_LONG).show();
+                                                // If it's a new sign-in from Google and no profile exists, maybe redirect to registration?
+                                                // For now, just show error.
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            if (buttonLogin != null) buttonLogin.setEnabled(true);
+                                            Toast.makeText(LoginActivity.this, "Error verifying customer profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
                             })
                             .addOnFailureListener(e -> {
                                 if (buttonLogin != null) buttonLogin.setEnabled(true);
@@ -196,7 +295,12 @@ public class LoginActivity extends BaseActivity {
                 })
                 .addOnFailureListener(e -> {
                     if (buttonLogin != null) buttonLogin.setEnabled(true);
-                    Toast.makeText(LoginActivity.this, "Error checking role: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    String error = e.getMessage();
+                    if (error != null && error.toLowerCase().contains("network")) {
+                        Toast.makeText(LoginActivity.this, "Network Error: Unable to verify account permissions.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error checking role: " + error, Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
     private void handleAdminLogin(String email, String password) {

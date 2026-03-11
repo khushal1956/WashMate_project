@@ -158,7 +158,9 @@ public class CustomerDashboardActivity extends BaseActivity {
                 startActivity(new Intent(this, SupportActivity.class));
             } else if (id == R.id.nav_logout) {
                 mAuth.signOut();
-                startActivity(new Intent(this, LoginActivity.class));
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
                 finish();
             }
             drawerLayout.closeDrawer(GravityCompat.START);

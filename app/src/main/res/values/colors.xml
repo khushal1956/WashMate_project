@@ -8,6 +8,15 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     
+    <!-- Dark Theme & Glassmorphism Colors -->
+    <color name="glass_bg_top">#1E3A8A</color> <!-- Blue 900ish -->
+    <color name="glass_bg_bottom">#0F172A</color> <!-- Slate 900 -->
+    <color name="glass_white_10">#1AFFFFFF</color>
+    <color name="glass_white_20">#33FFFFFF</color>
+    <color name="glass_white_05">#0DFFFFFF</color>
+    <color name="glass_stroke_light">#26FFFFFF</color> <!-- 15% White -->
+    <color name="glassTextPrimary">#F8FAFC</color>
+    <color name="glassTextSecondary">#94A3B8</color>
     <!-- Status Colors -->
     <color name="statusCompleted">#4CAF50</color> <!-- Green -->
     <color name="statusPending">#FFC107</color> <!-- Yellow -->
