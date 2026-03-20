@@ -52,6 +52,10 @@
 
     <!-- Missing Styles Fix -->
     <style name="ShapeAppearance.App.Circle" parent="ShapeAppearance.Material3.Corner.Full" />
+    
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 
     <style name="GlassCardPremium" parent="WashMateCard">
         <item name="cardBackgroundColor">#F0F8FF</item>

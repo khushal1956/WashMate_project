@@ -8,6 +8,8 @@ public class Customer {
     private String email;
     private String passwordHash;
     private String mobileNo;
+    private String gender;
+    private String profileImageUrl;
     private String status;
     private Date createdAt;
 
@@ -15,12 +17,14 @@ public class Customer {
         // Required for Firestore
     }
 
-    public Customer(String customerId, String fullName, String email, String passwordHash, String mobileNo, String status, Date createdAt) {
+    public Customer(String customerId, String fullName, String email, String passwordHash, String mobileNo, String gender, String profileImageUrl, String status, Date createdAt) {
         this.customerId = customerId;
         this.fullName = fullName;
         this.email = email;
         this.passwordHash = passwordHash;
         this.mobileNo = mobileNo;
+        this.gender = gender;
+        this.profileImageUrl = profileImageUrl;
         this.status = status;
         this.createdAt = createdAt;
     }
@@ -40,6 +44,12 @@ public class Customer {
 
     public String getMobileNo() { return mobileNo; }
     public void setMobileNo(String mobileNo) { this.mobileNo = mobileNo; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+
+    public String getProfileImageUrl() { return profileImageUrl; }
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

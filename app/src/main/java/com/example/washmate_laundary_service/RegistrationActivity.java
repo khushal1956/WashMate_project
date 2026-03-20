@@ -10,6 +10,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.net.Uri;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
@@ -26,6 +31,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.example.washmate_laundary_service.models.Customer;
 import com.example.washmate_laundary_service.models.CustomerAddress;
 import com.example.washmate_laundary_service.models.Admin;
@@ -35,13 +42,47 @@ import java.util.Date;
 
 public class RegistrationActivity extends BaseActivity {
 
-    private TextInputEditText etFullName, etEmail, etMobile, etAddress, etPassword, etConfirmPassword;
-    private TextInputLayout tilFullName, tilEmail, tilMobile, tilAddress, tilPassword, tilConfirmPassword;
-    private Button btnRegister;
-    private TextView tvLogin, tvTitle, tvSubtitle;
-    private View headerBackground, cardRegistration, btnBack;
+    private TextInputEditText etFullName, etEmail, etMobile, etAddress, etPassword, etConfirmPassword, etPincode, etCity;
+    private TextInputLayout tilFullName, tilEmail, tilMobile, tilAddress, tilPassword, tilConfirmPassword, tilPincode, tilGender, tilCity;
+    private AutoCompleteTextView actvGender;
+    private ShapeableImageView ivProfilePhoto;
+    private Button btnBackStep2, btnNextStep2, btnBackStep3, btnRegister;
+    private Button btnNextStep1;
+    private TextView tvLogin, tvTitle, tvSubtitle, tvProgressText;
+    private View headerBackground, cardRegistration, btnBack, flFormContainer;
+    private View llStep1, llStep2, llStep3;
+    private LinearProgressIndicator progressRegistration;
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
+    private int currentStep = 1;
+    private Uri profileImageUri = null;
+
+    private final ActivityResultLauncher<Intent> locationPickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    String address = result.getData().getStringExtra("address");
+                    String city = result.getData().getStringExtra("city");
+                    String pincode = result.getData().getStringExtra("pincode");
+
+                    if (etAddress != null && address != null) etAddress.setText(address);
+                    if (etCity != null && city != null) etCity.setText(city);
+                    if (etPincode != null && pincode != null) etPincode.setText(pincode);
+                }
+            }
+    );
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    profileImageUri = result.getData().getData();
+                    if (ivProfilePhoto != null && profileImageUri != null) {
+                        ivProfilePhoto.setImageURI(profileImageUri);
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,27 +111,60 @@ public class RegistrationActivity extends BaseActivity {
         tvLogin = findViewById(R.id.tvLogin);
         tvTitle = findViewById(R.id.tvTitle);
         tvSubtitle = findViewById(R.id.tvSubtitle);
-        headerBackground = findViewById(R.id.headerBackground);
         cardRegistration = findViewById(R.id.cardRegistration);
         btnBack = findViewById(R.id.btnBack);
+        
+        // New Multi-Step Views
+        progressRegistration = findViewById(R.id.progressRegistration);
+        tvProgressText = findViewById(R.id.tvProgressText);
+        flFormContainer = findViewById(R.id.flFormContainer);
+        llStep1 = findViewById(R.id.llStep1);
+        llStep2 = findViewById(R.id.llStep2);
+        llStep3 = findViewById(R.id.llStep3);
+        
+        btnNextStep1 = findViewById(R.id.btnNextStep1);
+        btnBackStep2 = findViewById(R.id.btnBackStep2);
+        btnNextStep2 = findViewById(R.id.btnNextStep2);
+        btnBackStep3 = findViewById(R.id.btnBackStep3);
+        
+        // New Fields Binding
+        etPincode = findViewById(R.id.etPincode);
+        tilPincode = findViewById(R.id.tilPincode);
+        etCity = findViewById(R.id.etCity);
+        tilCity = findViewById(R.id.tilCity);
+        actvGender = findViewById(R.id.actvGender);
+        tilGender = findViewById(R.id.tilGender);
+        ivProfilePhoto = findViewById(R.id.ivProfilePhoto);
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
         }
 
-        // Animations removed for stability test
-        // applyEntranceAnimations();
-
-        if (btnRegister != null) {
-            btnRegister.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (validateInput()) {
-                        registerUser();
-                    }
-                }
+        if (ivProfilePhoto != null) {
+            ivProfilePhoto.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                imagePickerLauncher.launch(intent);
             });
         }
+
+        if (actvGender != null) {
+            String[] genders = new String[]{getString(R.string.male), getString(R.string.female), getString(R.string.other)};
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_dropdown_item_glass, genders);
+            actvGender.setAdapter(adapter);
+        }
+        
+        setupStepNavigation();
+        
+        if (tilAddress != null) {
+            tilAddress.setEndIconOnClickListener(v -> {
+                Intent intent = new Intent(RegistrationActivity.this, LocationPickerActivity.class);
+                locationPickerLauncher.launch(intent);
+            });
+        }
+
+        // Animations removed for stability test
+        // applyEntranceAnimations();
 
         if (tvLogin != null) {
             tvLogin.setOnClickListener(new View.OnClickListener() {
@@ -100,29 +174,90 @@ public class RegistrationActivity extends BaseActivity {
                 }
             });
         }
+        
+        updateStepView();
+    }
+
+    private void setupStepNavigation() {
+        if (btnNextStep1 != null) {
+            btnNextStep1.setOnClickListener(v -> {
+                if (validateStep1()) {
+                    currentStep = 2;
+                    updateStepView();
+                }
+            });
+        }
+
+        if (btnBackStep2 != null) {
+            btnBackStep2.setOnClickListener(v -> {
+                currentStep = 1;
+                updateStepView();
+            });
+        }
+
+        if (btnNextStep2 != null) {
+            btnNextStep2.setOnClickListener(v -> {
+                if (validateStep2()) {
+                    currentStep = 3;
+                    updateStepView();
+                }
+            });
+        }
+
+        if (btnBackStep3 != null) {
+            btnBackStep3.setOnClickListener(v -> {
+                currentStep = 2;
+                updateStepView();
+            });
+        }
+
+        if (btnRegister != null) {
+            btnRegister.setOnClickListener(v -> {
+                if (validateStep3()) {
+                    registerUser();
+                }
+            });
+        }
+    }
+
+    private void updateStepView() {
+        if (llStep1 == null || llStep2 == null || llStep3 == null) return;
+
+        llStep1.setVisibility(currentStep == 1 ? View.VISIBLE : View.GONE);
+        llStep2.setVisibility(currentStep == 2 ? View.VISIBLE : View.GONE);
+        llStep3.setVisibility(currentStep == 3 ? View.VISIBLE : View.GONE);
+
+        if (progressRegistration != null && tvProgressText != null) {
+            switch (currentStep) {
+                case 1:
+                    progressRegistration.setProgress(20);
+                    tvProgressText.setText("Step 1 of 3");
+                    break;
+                case 2:
+                    progressRegistration.setProgress(50);
+                    tvProgressText.setText("Step 2 of 3");
+                    break;
+                case 3:
+                    progressRegistration.setProgress(100);
+                    tvProgressText.setText("Step 3 of 3");
+                    break;
+            }
+        }
     }
 
     private void applyEntranceAnimations() {
         // Disabled for stability
     }
 
-    private boolean validateInput() {
+    private boolean validateStep1() {
         boolean isValid = true;
-
-        // Reset errors
         if (tilFullName != null) tilFullName.setError(null);
         if (tilEmail != null) tilEmail.setError(null);
-        if (tilMobile != null) tilMobile.setError(null);
-        if (tilAddress != null) tilAddress.setError(null);
-        if (tilPassword != null) tilPassword.setError(null);
-        if (tilConfirmPassword != null) tilConfirmPassword.setError(null);
+        if (tilGender != null) tilGender.setError(null);
 
         String fullName = etFullName != null ? etFullName.getText().toString().trim() : "";
         String email = etEmail != null ? etEmail.getText().toString().trim() : "";
-        String mobile = etMobile != null ? etMobile.getText().toString().trim() : "";
-        String address = etAddress != null ? etAddress.getText().toString().trim() : "";
-        String password = etPassword != null ? etPassword.getText().toString() : "";
-        String confirmPassword = etConfirmPassword != null ? etConfirmPassword.getText().toString() : "";
+        String gender = actvGender != null ? actvGender.getText().toString().trim() : "";
 
         if (TextUtils.isEmpty(fullName)) {
             if (tilFullName != null) tilFullName.setError("Full name is required");
@@ -137,6 +272,26 @@ public class RegistrationActivity extends BaseActivity {
             isValid = false;
         }
 
+        if (TextUtils.isEmpty(gender) || gender.equals(getString(R.string.select_gender))) {
+            if (tilGender != null) tilGender.setError("Gender is required");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private boolean validateStep2() {
+        boolean isValid = true;
+        if (tilMobile != null) tilMobile.setError(null);
+        if (tilAddress != null) tilAddress.setError(null);
+        if (tilCity != null) tilCity.setError(null);
+        if (tilPincode != null) tilPincode.setError(null);
+
+        String mobile = etMobile != null ? etMobile.getText().toString().trim() : "";
+        String address = etAddress != null ? etAddress.getText().toString().trim() : "";
+        String city = etCity != null ? etCity.getText().toString().trim() : "";
+        String pincode = etPincode != null ? etPincode.getText().toString().trim() : "";
+
         if (TextUtils.isEmpty(mobile)) {
             if (tilMobile != null) tilMobile.setError("Mobile number is required");
             isValid = false;
@@ -150,7 +305,29 @@ public class RegistrationActivity extends BaseActivity {
             isValid = false;
         }
 
+        if (TextUtils.isEmpty(city)) {
+            if (tilCity != null) tilCity.setError("City is required");
+            isValid = false;
+        }
 
+        if (TextUtils.isEmpty(pincode)) {
+            if (tilPincode != null) tilPincode.setError("Pincode is required");
+            isValid = false;
+        } else if (pincode.length() < 5) {
+            if (tilPincode != null) tilPincode.setError("Enter a valid pincode");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private boolean validateStep3() {
+        boolean isValid = true;
+        if (tilPassword != null) tilPassword.setError(null);
+        if (tilConfirmPassword != null) tilConfirmPassword.setError(null);
+
+        String password = etPassword != null ? etPassword.getText().toString() : "";
+        String confirmPassword = etConfirmPassword != null ? etConfirmPassword.getText().toString() : "";
 
         if (TextUtils.isEmpty(password)) {
             if (tilPassword != null) tilPassword.setError("Password is required");
@@ -172,8 +349,8 @@ public class RegistrationActivity extends BaseActivity {
     }
 
     private void registerUser() {
-        if (etFullName == null || etEmail == null || etEmail == null || etMobile == null || etAddress == null ||
-            etPassword == null) {
+        if (etFullName == null || etEmail == null || etMobile == null || etAddress == null ||
+            etPassword == null || etPincode == null || actvGender == null) {
             return;
         }
 
@@ -187,7 +364,11 @@ public class RegistrationActivity extends BaseActivity {
         String email = etEmail.getText().toString().trim();
         String mobile = etMobile.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
+        String city = etCity.getText().toString().trim();
         String password = etPassword.getText().toString();
+        String pincode = etPincode.getText().toString().trim();
+        String gender = actvGender.getText().toString().trim();
+        String profileUrl = profileImageUri != null ? profileImageUri.toString() : "";
 
         btnRegister.setEnabled(false);
         btnRegister.setText("Registering...");
@@ -200,7 +381,7 @@ public class RegistrationActivity extends BaseActivity {
                             // Registration success, save to Firestore
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                saveUserToFirestore(user.getUid(), fullName, email, mobile, address);
+                                saveUserToFirestore(user.getUid(), fullName, email, mobile, address, city, pincode, gender, profileUrl);
                             } else {
                                 btnRegister.setEnabled(true);
                                 btnRegister.setText("Register");
@@ -235,12 +416,12 @@ public class RegistrationActivity extends BaseActivity {
                 .show();
     }
 
-    private void saveUserToFirestore(String userId, String fullName, String email, String mobile, String address) {
-        saveCustomerToFirestore(userId, fullName, email, mobile, address);
+    private void saveUserToFirestore(String userId, String fullName, String email, String mobile, String address, String city, String pincode, String gender, String profileUrl) {
+        saveCustomerToFirestore(userId, fullName, email, mobile, address, city, pincode, gender, profileUrl);
     }
 
-    private void saveCustomerToFirestore(String userId, String fullName, String email, String mobile, String address) {
-        Customer customer = new Customer(userId, fullName, email, "", mobile, "Active", new Date());
+    private void saveCustomerToFirestore(String userId, String fullName, String email, String mobile, String address, String city, String pincode, String gender, String profileUrl) {
+        Customer customer = new Customer(userId, fullName, email, "", mobile, gender, profileUrl, "Active", new Date());
 
         mFirestore.collection(FirebaseConstants.COLLECTION_CUSTOMERS).document(userId)
                 .set(customer)
@@ -248,7 +429,7 @@ public class RegistrationActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            saveAddressToFirestore(userId, address);
+                            saveAddressToFirestore(userId, address, city, pincode);
                         } else {
                             handleFirestoreError(task.getException(), "saving profile");
                         }
@@ -275,9 +456,9 @@ public class RegistrationActivity extends BaseActivity {
         finish();
     }
 
-    private void saveAddressToFirestore(String userId, String addressText) {
+    private void saveAddressToFirestore(String userId, String addressText, String city, String pincode) {
         String addressId = mFirestore.collection(FirebaseConstants.COLLECTION_CUSTOMER_ADDRESSES).document().getId();
-        CustomerAddress address = new CustomerAddress(addressId, userId, addressText, "", "", true, new Date());
+        CustomerAddress address = new CustomerAddress(addressId, userId, addressText, city, pincode, true, new Date());
 
         mFirestore.collection(FirebaseConstants.COLLECTION_CUSTOMER_ADDRESSES).document(addressId)
                 .set(address)

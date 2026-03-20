@@ -18,13 +18,19 @@
     <string name="next">पुढे</string>
 
     <!-- Login Screen -->
-    <string name="welcome_back">परत स्वागत आहे,</string>
+    <string name="welcome_back">परत स्वागत आहे</string>
+    <string name="login_subtitle">अल्ट्रा-प्रीमियम लॉन्ड्री, फक्त एक टॅप लांब।</string>
     <string name="sign_in_text">तुमच्या खात्यात साइन इन करा</string>
     <string name="email_hint">ईमेल पत्ता</string>
+    <string name="email_hint_example">name@example.com</string>
     <string name="password_hint">पासवर्ड</string>
     <string name="forgot_password">पासवर्ड विसरलात?</string>
-    <string name="get_started">सुरू करा</string>
+    <string name="or_continue_with">किंवा यासह सुरू ठेवा</string>
+    <string name="get_started">लॉगिन करा</string>
+    <string name="signup_prompt">खाते नाही? </string>
+    <string name="register_action">साइन अप करा</string>
     <string name="register_text">खाते नाही? साइन अप करा</string>
+    <string name="secure_wash_footer">SECUREWASH तंत्रज्ञानाद्वारे सुरक्षित</string>
     
     <!-- Navigation -->
     <string name="nav_home">होम</string>

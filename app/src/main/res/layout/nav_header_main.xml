@@ -2,29 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="176dp"
-    android:background="@color/washmatePrimary"
+    android:background="#0F172A"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="24dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivHeaderProfile"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:paddingTop="8dp"
-        android:src="@drawable/ic_launcher_background"
-        android:background="@drawable/bg_circle_button"
-        android:elevation="4dp"/>
+        android:src="@drawable/ic_person_24dp"
+        android:background="@drawable/bg_glass_card"
+        android:padding="16dp"
+        app:tint="@color/white"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
 
     <TextView
         android:id="@+id/tvHeaderName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="12dp"
         android:text="WashMate User"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         android:textStyle="bold"/>
 
     <TextView
@@ -32,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="welcome@washmate.com"
-        android:textColor="#E0E0E0"
+        android:textColor="@color/stitch_text_dim"
         android:textSize="14sp"/>
 
 </LinearLayout>

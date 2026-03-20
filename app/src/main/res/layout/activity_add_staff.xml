@@ -4,186 +4,216 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/washmateBg"
+    android:background="#0A0F14"
+    android:fitsSystemWindows="true"
     tools:context=".AddStaffActivity">
 
-    <!-- Header -->
+    <!-- Abstract Gradient Background Effect -->
     <View
-        android:id="@+id/headerBackground"
+        android:id="@+id/headerBackgroundOverlay"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/washmatePrimary"
+        android:layout_height="300dp"
+        android:background="@drawable/bg_gradient_primary"
+        android:alpha="0.08"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_back_24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/white" />
+    <!-- Sleek Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/washmate_logo1"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_glass_card"
+            android:src="@drawable/ic_arrow_back_24dp"
+            app:tint="#CBD5E1" />
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="New Expert"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnBack" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Onboard Expert"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingBottom="24dp">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="32dp">
 
+            <!-- Form Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/WashMateCard">
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#1E293B"
+                app:cardBackgroundColor="#0F172A"
+                android:layout_marginBottom="40dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="24dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Personal Details"
-                        android:textColor="@color/washmatePrimary"
+                        android:text="Expert Profile"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="24dp" />
 
                     <!-- Full Name -->
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/WashMateInput"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/transparent"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:hintTextColor="@color/stitch_primary"
                         android:hint="Full Name"
                         app:startIconDrawable="@android:drawable/ic_menu_edit"
-                        app:startIconTint="@color/washmatePrimary">
+                        app:startIconTint="#94A3B8">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffFullName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingVertical="16dp"
                             android:inputType="textPersonName"
-                            android:textColor="@color/textPrimary" />
+                            android:textColor="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Email -->
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/WashMateInput"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/transparent"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:hintTextColor="@color/stitch_primary"
                         android:hint="Email Address"
                         app:startIconDrawable="@android:drawable/ic_dialog_email"
-                        app:startIconTint="@color/washmatePrimary">
+                        app:startIconTint="#94A3B8">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffEmail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingVertical="16dp"
                             android:inputType="textEmailAddress"
-                            android:textColor="@color/textPrimary" />
+                            android:textColor="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Mobile -->
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/WashMateInput"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        app:boxBackgroundColor="@android:color/transparent"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:hintTextColor="@color/stitch_primary"
                         android:hint="Mobile Number"
                         app:startIconDrawable="@android:drawable/ic_menu_call"
-                        app:startIconTint="@color/washmatePrimary">
+                        app:startIconTint="#94A3B8">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffMobile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingVertical="16dp"
                             android:inputType="phone"
-                            android:textColor="@color/textPrimary" />
+                            android:textColor="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Staff Role -->
+                    <!-- Staff Role Selector -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Specialization"
-                        android:textColor="@color/textSecondary"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="8dp" />
+                        android:text="Assigned Specialization"
+                        android:textColor="#94A3B8"
+                        android:textSize="12sp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:textStyle="bold" />
                     
-                    <FrameLayout
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:layout_marginBottom="16dp"
-                        android:background="@drawable/rounded_input_bg"
-                        android:backgroundTint="#F5F5F5">
+                        android:layout_height="60dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#1E293B"
+                        app:cardBackgroundColor="#0AFFFFFF"
+                        android:layout_marginBottom="16dp">
                         <Spinner
                             android:id="@+id/spnStaffRole"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:paddingHorizontal="16dp" />
-                    </FrameLayout>
+                            android:paddingHorizontal="16dp"
+                            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Password -->
                     <com.google.android.material.textfield.TextInputLayout
-                        style="@style/WashMateInput"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="32dp"
+                        app:boxBackgroundColor="@android:color/transparent"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:hintTextColor="@color/stitch_primary"
                         android:hint="Secure Password"
                         app:passwordToggleEnabled="true"
+                        app:passwordToggleTint="#94A3B8"
                         app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
-                        app:startIconTint="@color/washmatePrimary">
+                        app:startIconTint="#94A3B8">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffPassword"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:paddingVertical="16dp"
                             android:inputType="textPassword"
-                            android:textColor="@color/textPrimary" />
+                            android:textColor="@color/white" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAddStaffSubmit"
-                        style="@style/WashMateButton"
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="ONBOARD SPECIALIST"
-                        app:backgroundTint="@color/washmatePrimary" />
+                        android:layout_height="60dp"
+                        android:text="Onboard Specialist"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="20dp"
+                        app:backgroundTint="@color/stitch_primary"
+                        android:textColor="#0A0F14" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

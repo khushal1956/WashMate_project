@@ -113,10 +113,17 @@ public class LoginActivity extends BaseActivity {
         }
 
         View tvRegister = findViewById(R.id.tvRegister);
+        View signupLayout = findViewById(R.id.signupLayout);
+        
+        View.OnClickListener registerListener = v -> {
+            startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
+        };
+
         if (tvRegister != null) {
-            tvRegister.setOnClickListener(v -> {
-                startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
-            });
+            tvRegister.setOnClickListener(registerListener);
+        }
+        if (signupLayout != null) {
+            signupLayout.setOnClickListener(registerListener);
         }
 
         if (tvForgotPassword != null) {
@@ -211,10 +218,9 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void performLogin(String email, String password) {
-        // ── Offline Admin Login ──────────────────────────────────────────
-        // No Firebase call needed. If credentials match, go straight to dashboard.
-        if (email.equals("admin@gmail.com") && password.equals("admin123")) {
-            navigateToAdminDashboard();
+        // Redirect specialized Admin login to proper Firebase Auth flow
+        if (email.equalsIgnoreCase("admin@gmail.com")) {
+            handleAdminLogin(email, password);
             return;
         }
 
@@ -253,54 +259,57 @@ public class LoginActivity extends BaseActivity {
     private void checkUserRoleAndNavigate(String uid) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         
+        // Helper method to fall back to Customer Dashboard
+        Runnable fallbackToCustomer = () -> {
+            startActivity(new Intent(LoginActivity.this, CustomerDashboardActivity.class));
+            finish();
+        };
+
         // 1. Check if Admin
         db.collection(FirebaseConstants.COLLECTION_ADMINS).document(uid).get()
                 .addOnSuccessListener(adminSnap -> {
                     if (adminSnap.exists()) {
                         navigateToAdminDashboard();
-                        return;
+                    } else {
+                        checkStaffRole(uid, fallbackToCustomer);
                     }
-                    
-                    // 2. Check if Staff
-                    db.collection(FirebaseConstants.COLLECTION_STAFF).document(uid).get()
-                            .addOnSuccessListener(staffSnap -> {
-                                if (staffSnap.exists()) {
-                                    startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
-                                    finish();
-                                    return;
-                                }
-                                
-                                // 3. Check if Customer
-                                db.collection(FirebaseConstants.COLLECTION_CUSTOMERS).document(uid).get()
-                                        .addOnSuccessListener(customerSnap -> {
-                                            if (customerSnap.exists()) {
-                                                startActivity(new Intent(LoginActivity.this, CustomerDashboardActivity.class));
-                                                finish();
-                                            } else {
-                                                if (buttonLogin != null) buttonLogin.setEnabled(true);
-                                                Toast.makeText(LoginActivity.this, "Account found but no profile data. Please contact support.", Toast.LENGTH_LONG).show();
-                                                // If it's a new sign-in from Google and no profile exists, maybe redirect to registration?
-                                                // For now, just show error.
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            if (buttonLogin != null) buttonLogin.setEnabled(true);
-                                            Toast.makeText(LoginActivity.this, "Error verifying customer profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        });
-                            })
-                            .addOnFailureListener(e -> {
-                                if (buttonLogin != null) buttonLogin.setEnabled(true);
-                                Toast.makeText(LoginActivity.this, "Error checking staff role: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
                 })
                 .addOnFailureListener(e -> {
-                    if (buttonLogin != null) buttonLogin.setEnabled(true);
-                    String error = e.getMessage();
-                    if (error != null && error.toLowerCase().contains("network")) {
-                        Toast.makeText(LoginActivity.this, "Network Error: Unable to verify account permissions.", Toast.LENGTH_LONG).show();
+                    // On failure (like permission denied), try next role
+                    checkStaffRole(uid, fallbackToCustomer);
+                });
+    }
+
+    private void checkStaffRole(String uid, Runnable fallbackToCustomer) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // 2. Check if Staff
+        db.collection(FirebaseConstants.COLLECTION_STAFF).document(uid).get()
+                .addOnSuccessListener(staffSnap -> {
+                    if (staffSnap.exists()) {
+                        startActivity(new Intent(LoginActivity.this, StaffDashboardActivity.class));
+                        finish();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Error checking role: " + error, Toast.LENGTH_SHORT).show();
+                        checkCustomerRole(uid, fallbackToCustomer);
                     }
+                })
+                .addOnFailureListener(e -> {
+                    checkCustomerRole(uid, fallbackToCustomer);
+                });
+    }
+    
+    private void checkCustomerRole(String uid, Runnable fallback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // 3. Check if Customer
+        db.collection(FirebaseConstants.COLLECTION_CUSTOMERS).document(uid).get()
+                .addOnSuccessListener(customerSnap -> {
+                    fallback.run();
+                    if (!customerSnap.exists()) {
+                        Toast.makeText(LoginActivity.this, "Profile data missing, using defaults.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Final fallback
+                    fallback.run();
                 });
     }
     private void handleAdminLogin(String email, String password) {

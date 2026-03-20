@@ -40,9 +40,9 @@ public class IroningServiceActivity extends BaseActivity {
 
     private void launchOrderActivity(String serviceName, double price) {
         Intent intent = new Intent(this, ClothingSelectionActivity.class);
-        // intent.putExtra("SERVICE_NAME", serviceName);
-        // intent.putExtra("SERVICE_TYPE", "ironing");
-        // intent.putExtra("SERVICE_PRICE", price);
+        intent.putExtra("SERVICE_NAME", serviceName);
+        intent.putExtra("SERVICE_TYPE", "ironing");
+        intent.putExtra("SERVICE_PRICE", price);
         startActivity(intent);
     }
 }

@@ -25,10 +25,10 @@ public class PremiumServiceActivity extends BaseActivity {
     }
 
     private void setupServiceCardListeners() {
-        // Premium Wash & Fold card
+        // Premium WashMate card
         MaterialCardView cardPremiumWashFold = findViewById(R.id.cardPremiumWashFold);
         if (cardPremiumWashFold != null) {
-            cardPremiumWashFold.setOnClickListener(v -> launchOrderActivity("Premium Wash & Fold", 150.0));
+            cardPremiumWashFold.setOnClickListener(v -> launchOrderActivity("Premium WashMate", 150.0));
         }
 
         // Designer Garment Care card
@@ -46,9 +46,9 @@ public class PremiumServiceActivity extends BaseActivity {
 
     private void launchOrderActivity(String serviceName, double price) {
         Intent intent = new Intent(this, ClothingSelectionActivity.class);
-        // intent.putExtra("SERVICE_NAME", serviceName);
-        // intent.putExtra("SERVICE_TYPE", "premium");
-        // intent.putExtra("SERVICE_PRICE", price);
+        intent.putExtra("SERVICE_NAME", serviceName);
+        intent.putExtra("SERVICE_TYPE", "premium");
+        intent.putExtra("SERVICE_PRICE", price);
         startActivity(intent);
     }
 }

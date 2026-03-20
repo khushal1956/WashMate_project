@@ -1,5 +1,6 @@
 package com.example.washmate_laundary_service;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ public class OrderTrackingActivity extends BaseActivity {
     
     // Timeline steps
     private View layoutStepPlaced, layoutStepPickup, layoutStepProcess, layoutStepOut, layoutStepDelivered;
+    private View cardFeedback;
+    private android.widget.Button btnRateNow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,14 @@ public class OrderTrackingActivity extends BaseActivity {
         layoutStepProcess = findViewById(R.id.layoutStepProcess);
         layoutStepOut = findViewById(R.id.layoutStepOut);
         layoutStepDelivered = findViewById(R.id.layoutStepDelivered);
+        cardFeedback = findViewById(R.id.cardFeedback);
+        btnRateNow = findViewById(R.id.btnRateNow);
+
+        btnRateNow.setOnClickListener(v -> {
+            Intent intent = new Intent(this, FeedbackActivity.class);
+            intent.putExtra("ORDER_ID", orderId);
+            startActivity(intent);
+        });
         
         // Initialize placeholders titles
         setStepData(layoutStepPlaced, "Order Placed", "We have received your order", false, true, false); // Top
@@ -107,6 +118,9 @@ public class OrderTrackingActivity extends BaseActivity {
         
         if (s.contains("completed") || s.contains("delivered")) {
             activateStep(layoutStepDelivered, true);
+            cardFeedback.setVisibility(View.VISIBLE);
+        } else {
+            cardFeedback.setVisibility(View.GONE);
         }
     }
     
@@ -142,14 +156,15 @@ public class OrderTrackingActivity extends BaseActivity {
         View lineTop = view.findViewById(R.id.lineTop);
         View lineBottom = view.findViewById(R.id.lineBottom);
         
-        int activeColor = ContextCompat.getColor(this, R.color.washmatePrimary);
-        int inactiveColor = ContextCompat.getColor(this, R.color.textSecondary);
-        int grayColor = ContextCompat.getColor(this, R.color.light_gray);
+        int activeColor = ContextCompat.getColor(this, R.color.stitch_primary);
+        int inactiveColor = ContextCompat.getColor(this, R.color.glassTextSecondary);
+        int dotColor = ContextCompat.getColor(this, R.color.glass_white_10);
         
         if (isActive) {
             ivIcon.setImageResource(R.drawable.ic_check_circle); 
             ivIcon.setColorFilter(activeColor);
             tvTitle.setTextColor(activeColor);
+            tvSubtitle.setAlpha(1.0f);
             
             lineTop.setBackgroundColor(activeColor); 
             lineBottom.setBackgroundColor(activeColor);
@@ -157,9 +172,10 @@ public class OrderTrackingActivity extends BaseActivity {
             ivIcon.setImageResource(R.drawable.ic_circle_outline);
             ivIcon.setColorFilter(inactiveColor);
             tvTitle.setTextColor(inactiveColor);
+            tvSubtitle.setAlpha(0.5f);
             
-            lineTop.setBackgroundColor(grayColor);
-            lineBottom.setBackgroundColor(grayColor);
+            lineTop.setBackgroundColor(dotColor);
+            lineBottom.setBackgroundColor(dotColor);
         }
     }
 }

@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.lottie)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)

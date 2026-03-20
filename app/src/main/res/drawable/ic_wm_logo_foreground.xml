@@ -1,0 +1,53 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Segment Borders (Glowing blue arcs) -->
+    <!-- Top Arc -->
+    <path
+        android:pathData="M80,40 A60,60 0 0,1 120,40"
+        android:strokeWidth="4"
+        android:strokeColor="#259AF4"
+        android:strokeLineCap="round"/>
+    
+    <!-- Bottom Arc -->
+    <path
+        android:pathData="M80,160 A60,60 0 0,0 120,160"
+        android:strokeWidth="4"
+        android:strokeColor="#259AF4"
+        android:strokeLineCap="round"/>
+
+    <!-- Left Arc -->
+    <path
+        android:pathData="M40,80 A60,60 0 0,0 40,120"
+        android:strokeWidth="4"
+        android:strokeColor="#259AF4"
+        android:strokeLineCap="round"/>
+
+    <!-- Right Arc -->
+    <path
+        android:pathData="M160,80 A60,60 0 0,1 160,120"
+        android:strokeWidth="4"
+        android:strokeColor="#259AF4"
+        android:strokeLineCap="round"/>
+
+    <!-- WM Text (Manual path for better control/glowing effect) -->
+    <!-- W -->
+    <path
+        android:pathData="M65,85 L75,115 L85,95 L95,115 L105,85"
+        android:strokeWidth="6"
+        android:strokeColor="#259AF4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- M -->
+    <path
+        android:pathData="M115,115 L115,85 L130,100 L145,85 L145,115"
+        android:strokeWidth="6"
+        android:strokeColor="#259AF4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+</vector>

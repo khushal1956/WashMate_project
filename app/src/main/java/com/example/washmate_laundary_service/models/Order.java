@@ -21,7 +21,8 @@ public class Order {
     private String status;
     private String paymentStatus; // Paid, Pending, Failed
     private long timestamp;
-
+    private String assignedStaffId;
+    private String assignedStaffName;
 
     public Order() {
         // Default constructor required for Firebase
@@ -116,5 +117,11 @@ public class Order {
 
     public String getPaymentStatus() { return paymentStatus; }
     public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
+
+    public String getAssignedStaffId() { return assignedStaffId; }
+    public void setAssignedStaffId(String assignedStaffId) { this.assignedStaffId = assignedStaffId; }
+
+    public String getAssignedStaffName() { return assignedStaffName; }
+    public void setAssignedStaffName(String assignedStaffName) { this.assignedStaffName = assignedStaffName; }
 }
 

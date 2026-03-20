@@ -148,7 +148,7 @@ public class StaffDashboardActivity extends BaseActivity {
                     if (documentSnapshot.exists()) {
                         Staff staff = documentSnapshot.toObject(Staff.class);
                         if (staff != null) {
-                            tvStaffName.setText(getString(R.string.greeting_format, staff.getFullName()));
+                            tvStaffName.setText("Welcome back, " + staff.getFullName() + "!");
                         }
                     }
                 });
@@ -157,61 +157,20 @@ public class StaffDashboardActivity extends BaseActivity {
     private void fetchAssignedOrders() {
         progressBar.setVisibility(View.VISIBLE);
         
-        // 1. Get Assignments for this Staff
-        mFirestore.collection("ORDER_STAFF_ASSIGNMENTS")
-                .whereEqualTo("staffId", currentStaffId)
+        mFirestore.collection("ORDERS")
+                .whereEqualTo("assignedStaffId", currentStaffId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<String> orderIds = new ArrayList<>();
+                    List<Order> orders = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        orderIds.add(doc.getString("orderId"));
+                        orders.add(doc.toObject(Order.class));
                     }
-
-                    if (orderIds.isEmpty()) {
-                        showEmptyState();
-                    } else {
-                        fetchOrdersDetails(orderIds);
-                    }
+                    displayOrders(orders);
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(this, "Error fetching assignments", Toast.LENGTH_SHORT).show();
                 });
-    }
-
-    private void fetchOrdersDetails(List<String> orderIds) {
-        // Firestore 'in' query supports up to 10 items. 
-        // For robustness, we'll fetch individually or use batches if needed.
-        // For now, simpler approach: fetch all orders and filter (not efficient but safe for small scale)
-        // OR better: fetch each order individually and aggregate.
-        
-        List<Order> orders = new ArrayList<>();
-        // Use a counter to track when all are fetched
-        final int[] fetchedCount = {0};
-        final int totalOrders = orderIds.size();
-
-        for (String orderId : orderIds) {
-            mFirestore.collection("ORDERS").document(orderId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Order order = documentSnapshot.toObject(Order.class);
-                            if (order != null) {
-                                orders.add(order);
-                            }
-                        }
-                        fetchedCount[0]++;
-                        if (fetchedCount[0] == totalOrders) {
-                             displayOrders(orders);
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        fetchedCount[0]++; // Count fail as fetched to avoid stall
-                        if (fetchedCount[0] == totalOrders) {
-                             displayOrders(orders);
-                        }
-                    });
-        }
     }
 
     private void displayOrders(List<Order> orders) {

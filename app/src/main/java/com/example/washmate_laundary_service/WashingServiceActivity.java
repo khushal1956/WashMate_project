@@ -38,7 +38,9 @@ public class WashingServiceActivity extends BaseActivity {
                 try {
                     Log.d(TAG, "Regular Wash clicked, launching ClothingSelectionActivity");
                     Intent intent = new Intent(WashingServiceActivity.this, ClothingSelectionActivity.class);
-                    // intent.putExtra("SERVICE_NAME", "Regular Wash"); // Currently not used by ClothingSelection, but kept for future
+                    intent.putExtra("SERVICE_NAME", "Regular Wash");
+                    intent.putExtra("SERVICE_TYPE", "washing");
+                    intent.putExtra("SERVICE_PRICE", 100.0); // Base price
                     startActivity(intent);
                     Log.d(TAG, "ClothingSelectionActivity started successfully");
                 } catch (Exception e) {
@@ -55,7 +57,9 @@ public class WashingServiceActivity extends BaseActivity {
             cardDelicateWash.setOnClickListener(v -> {
                 try {
                     Intent intent = new Intent(WashingServiceActivity.this, ClothingSelectionActivity.class);
-                    // intent.putExtra("SERVICE_NAME", "Delicate Wash"); 
+                    intent.putExtra("SERVICE_NAME", "Delicate Wash"); 
+                    intent.putExtra("SERVICE_TYPE", "washing");
+                    intent.putExtra("SERVICE_PRICE", 120.0); 
                     startActivity(intent);
                 } catch (Exception e) {
                     Log.e(TAG, "Error launching OrderActivity", e);
@@ -69,7 +73,9 @@ public class WashingServiceActivity extends BaseActivity {
             cardExpressWash.setOnClickListener(v -> {
                 try {
                     Intent intent = new Intent(WashingServiceActivity.this, ClothingSelectionActivity.class);
-                    // intent.putExtra("SERVICE_NAME", "Express Wash");
+                    intent.putExtra("SERVICE_NAME", "Express Wash");
+                    intent.putExtra("SERVICE_TYPE", "washing");
+                    intent.putExtra("SERVICE_PRICE", 150.0);
                     startActivity(intent);
                 } catch (Exception e) {
                     Log.e(TAG, "Error launching OrderActivity", e);

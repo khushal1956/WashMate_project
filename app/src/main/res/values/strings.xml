@@ -18,14 +18,29 @@
     <string name="next">Next</string>
 
     <!-- Login Screen -->
-    <string name="welcome_back">Welcome Back,</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="login_subtitle">Ultra-premium laundry, just a tap away.</string>
     <string name="sign_in_text">Sign in to your account</string>
     <string name="email_hint">Email Address</string>
+    <string name="email_hint_example">name@example.com</string>
     <string name="password_hint">Password</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="get_started">GET STARTED</string>
+    <string name="or_continue_with">OR CONTINUE WITH</string>
+    <string name="get_started">LOG IN</string>
+    <string name="signup_prompt">Don\'t have an account? </string>
+    <string name="register_action">Sign Up</string>
     <string name="register_text">Don\'t have an account? Sign Up</string>
+    <string name="secure_wash_footer">PROTECTED BY SECUREWASH TECHNOLOGY</string>
     
+    <!-- New Registration Fields -->
+    <string name="pincode_hint">Pincode</string>
+    <string name="gender_hint">Gender</string>
+    <string name="select_gender">Select Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+    <string name="profile_photo">Profile Photo (Optional)</string>
+
     <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_orders">Orders</string>
@@ -83,7 +98,7 @@
     <string name="item_premium_ironing_desc">Steam ironing for formal wear</string>
 
     <string name="premium_desc">Luxury care for your finest garments</string>
-    <string name="item_premium_wash">Premium Wash &amp; Fold</string>
+    <string name="item_premium_wash">Premium WashMate</string>
     <string name="item_premium_wash_desc">Luxury detergent, hand-folded</string>
     <string name="item_designer_care">Designer Garment Care</string>
     <string name="item_designer_care_desc">Special care for designer wear</string>
@@ -153,6 +168,23 @@
     <string name="btn_mark_delivered">Mark as Delivered</string>
     
     <!-- Accessibility -->
+    <string-array name="supported_cities">
+        <item>Ahmedabad</item>
+        <item>Surat</item>
+        <item>Vadodara</item>
+        <item>Rajkot</item>
+        <item>Bhavnagar</item>
+        <item>Jamnagar</item>
+        <item>Junagadh</item>
+        <item>Gandhinagar</item>
+        <item>Mumbai</item>
+        <item>Delhi</item>
+        <item>Bangalore</item>
+        <item>Pune</item>
+        <item>Hyderabad</item>
+        <item>Chennai</item>
+        <item>Kolkata</item>
+    </string-array>
     <string name="desc_logout">Logout</string>
     <string name="desc_waving_hand">Waving hand</string>
 </resources>

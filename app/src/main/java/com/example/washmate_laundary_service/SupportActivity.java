@@ -69,30 +69,6 @@ public class SupportActivity extends BaseActivity {
     }
 
     private void setupNavigation() {
-        BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
-        if (bottomNavigation != null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_support);
-
-            bottomNavigation.setOnItemSelectedListener(item -> {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    startActivity(new Intent(this, CustomerDashboardActivity.class));
-                    finish(); // Close this activity
-                    return true;
-                } else if (itemId == R.id.nav_orders) {
-                    startActivity(new Intent(this, CustomerOrdersActivity.class));
-                    finish(); // Close this activity
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
-                    finish(); // Close this activity
-                    return true;
-                } else if (itemId == R.id.nav_support) {
-                    // Already here
-                    return true;
-                }
-                return false;
-            });
-        }
+        setupBottomNavigation(R.id.nav_support);
     }
 }

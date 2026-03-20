@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@android:drawable/ic_menu_compass"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_manage_orders"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Manage Orders" />
+        <item
+            android:id="@+id/nav_manage_staff"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="Manage Team" />
+        <item
+            android:id="@+id/nav_manage_services"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="Services Portfolio" />
+        <item
+            android:id="@+id/nav_reports"
+            android:icon="@android:drawable/ic_menu_sort_by_size"
+            android:title="Reports &amp; Analytics" />
+    </group>
+
+    <item android:title="Account">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@android:drawable/ic_lock_power_off"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu>

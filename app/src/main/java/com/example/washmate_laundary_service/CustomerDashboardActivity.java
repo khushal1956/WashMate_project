@@ -23,7 +23,7 @@ import androidx.core.view.GravityCompat;
 import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.List;
-import com.example.washmate_laundary_service.adapters.SliderAdapter;
+
 
 public class CustomerDashboardActivity extends BaseActivity {
 
@@ -34,12 +34,7 @@ public class CustomerDashboardActivity extends BaseActivity {
     private TextView tvGreeting, tvHeaderName, tvHeaderEmail;
     private androidx.drawerlayout.widget.DrawerLayout drawerLayout;
     private com.google.android.material.navigation.NavigationView navigationView;
-    private ImageButton btnMenu;
-    private androidx.viewpager2.widget.ViewPager2 vpSlider;
-    
-    // Slider
-    private Handler sliderHandler = new Handler(Looper.getMainLooper());
-    private Runnable sliderRunnable;
+    private ImageButton btnMenu, btnNotification;
     
     // Bottom Nav
     private BottomNavigationView bottomNavigation;
@@ -53,7 +48,6 @@ public class CustomerDashboardActivity extends BaseActivity {
         mFirestore = FirebaseFirestore.getInstance();
 
         initializeViews();
-        setupSlider();
         setupDrawer();
         fetchUserData();
         setupServiceCards();
@@ -64,83 +58,38 @@ public class CustomerDashboardActivity extends BaseActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         btnMenu = findViewById(R.id.btnMenu);
-        vpSlider = findViewById(R.id.vpSlider);
         
         // Navigation Header Views
         View headerView = navigationView.getHeaderView(0);
         tvHeaderName = headerView.findViewById(R.id.tvHeaderName);
         tvHeaderEmail = headerView.findViewById(R.id.tvHeaderEmail);
         
-        bottomNavigation = findViewById(R.id.bottomNavigation);
-        if (bottomNavigation != null) {
-            bottomNavigation.setSelectedItemId(R.id.nav_home);
-            bottomNavigation.setOnItemSelectedListener(item -> {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) return true;
-                if (itemId == R.id.nav_orders) {
-                    startActivity(new Intent(this, CustomerOrdersActivity.class));
-                    return true;
-                }
-                if (itemId == R.id.nav_profile) {
-                    startActivity(new Intent(this, ProfileActivity.class));
-                    return true;
-                }
-                 if (itemId == R.id.nav_clothing_selection) {
-                    startActivity(new Intent(this, ClothingSelectionActivity.class));
-                    return true;
-                }
-                if (itemId == R.id.nav_support) {
-                    startActivity(new Intent(this, SupportActivity.class));
-                    return true;
-                }
-                return false;
-            });
+        setupBottomNavigation(R.id.nav_home);
+        
+        // Profile Icon trigger
+        View ivUserProfile = findViewById(R.id.ivUserProfile);
+        if (ivUserProfile != null) {
+            ivUserProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        }
+        
+        // Menu button trigger
+        if (btnMenu != null) {
+            btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+        }
+
+        // Pulse animation for Offer Tag
+        View tagFirstOrder = findViewById(R.id.tagFirstOrder);
+        if (tagFirstOrder != null) {
+            Animation pulse = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+            pulse.setDuration(1200);
+            pulse.setRepeatMode(Animation.REVERSE);
+            pulse.setRepeatCount(Animation.INFINITE);
+            tagFirstOrder.startAnimation(pulse);
         }
     }
 
-    private void setupSlider() {
-        List<com.example.washmate_laundary_service.adapters.SliderAdapter.SliderItem> sliderItems = new ArrayList<>();
-        // Premium Slider Items (HD Photos)
-        sliderItems.add(new com.example.washmate_laundary_service.adapters.SliderAdapter.SliderItem(
-                R.drawable.slide_1_washing, 
-                "Doorstep Laundry Service", 
-                "Premium Washing & Care"
-        ));
-        sliderItems.add(new com.example.washmate_laundary_service.adapters.SliderAdapter.SliderItem(
-                R.drawable.slide_2_ironing, 
-                "Steam Iron & Press", 
-                "Wrinkle-free professional finish"
-        ));
-        sliderItems.add(new com.example.washmate_laundary_service.adapters.SliderAdapter.SliderItem(
-               R.drawable.slide_3_delivery, 
-                "Free Pickup & Delivery", 
-                "At your doorstep, on time"
-        ));
-        sliderItems.add(new com.example.washmate_laundary_service.adapters.SliderAdapter.SliderItem(
-               R.drawable.slide_4_cleaning, 
-                "Deep Wash & Care", 
-                "Fabric-friendly stain removal"
-        ));
-
-        vpSlider.setAdapter(new com.example.washmate_laundary_service.adapters.SliderAdapter(sliderItems));
-        
-        // Auto-Slide
-        sliderRunnable = new Runnable() {
-            @Override
-            public void run() {
-                int currentItem = vpSlider.getCurrentItem();
-                int totalItems = vpSlider.getAdapter().getItemCount();
-                int nextItem = (currentItem + 1) % totalItems;
-                vpSlider.setCurrentItem(nextItem, true);
-                sliderHandler.postDelayed(this, 4500);
-            }
-        };
-        sliderHandler.postDelayed(sliderRunnable, 4500);
-    }
     
     private void setupDrawer() {
-        btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-        
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
@@ -179,7 +128,7 @@ public class CustomerDashboardActivity extends BaseActivity {
                         if (documentSnapshot.exists()) {
                             String name = documentSnapshot.getString("fullName");
                             if (name != null) {
-                                tvGreeting.setText(getString(R.string.greeting_format, name.split(" ")[0]));
+                                if (tvGreeting != null) tvGreeting.setText(getString(R.string.greeting_format, name.split(" ")[0]));
                                 if (tvHeaderName != null) tvHeaderName.setText(name);
                             }
                         }
@@ -199,21 +148,34 @@ public class CustomerDashboardActivity extends BaseActivity {
         
         View cardPremium = findViewById(R.id.cardPremium);
         if (cardPremium != null) cardPremium.setOnClickListener(v -> startActivity(new Intent(this, PremiumServiceActivity.class)));
-        
-        View cardNewOrder = findViewById(R.id.cardNewOrder);
-        if (cardNewOrder != null) cardNewOrder.setOnClickListener(v -> startActivity(new Intent(this, ClothingSelectionActivity.class)));
+
+        // Claim Offer logic
+        View btnClaimOffer1 = findViewById(R.id.btnClaimOffer1);
+        if (btnClaimOffer1 != null) {
+            btnClaimOffer1.setOnClickListener(v -> {
+                // Animation feedback
+                v.animate().scaleX(1.1f).scaleY(1.1f).setDuration(100).withEndAction(() -> {
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).withEndAction(() -> {
+                        Intent intent = new Intent(this, ClothingSelectionActivity.class);
+                        intent.putExtra("SERVICE_NAME", "First Order Offer");
+                        intent.putExtra("SERVICE_TYPE", "washing");
+                        intent.putExtra("SERVICE_PRICE", 0.7); // 30% off multiplier
+                        startActivity(intent);
+                    });
+                });
+                Toast.makeText(this, "🎉 Offer Applied! 30% discount will be added to your first order.", Toast.LENGTH_LONG).show();
+            });
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        sliderHandler.removeCallbacks(sliderRunnable);
     }
     
     @Override
     protected void onResume() {
         super.onResume();
-        if (sliderRunnable != null) sliderHandler.postDelayed(sliderRunnable, 4500);
-        if (bottomNavigation != null) bottomNavigation.setSelectedItemId(R.id.nav_home);
+        // No manual selection needed, setupBottomNavigation handles it
     }
 }

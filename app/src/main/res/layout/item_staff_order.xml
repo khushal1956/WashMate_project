@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/WashMateCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#1E293B"
+    app:cardBackgroundColor="#0F172A">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <!-- Header -->
+        <!-- Header: Customer & Status -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -32,8 +35,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Customer Name"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -41,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Order #12345"
-                    android:textColor="@color/textSecondary"
+                    android:textColor="#94A3B8"
                     android:textSize="12sp"
                     android:layout_marginTop="2dp" />
             </LinearLayout>
@@ -51,26 +54,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Pending"
-                android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textColor="#0A0F14"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="6dp"
-                android:background="@drawable/bg_status_pending"/>
+                android:background="@drawable/bg_glass_card"
+                android:backgroundTint="@color/stitch_primary"/>
         </LinearLayout>
         
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEE"
-            android:layout_marginBottom="12dp"/>
+            android:background="#1E293B"
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Details -->
+        <!-- Details Grid Style -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             
+            <!-- Service & Type -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,15 +84,15 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Service:"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp"/>
+                    android:text="Service"
+                    android:textColor="#64748B"
+                    android:textSize="13sp"/>
                 <TextView
                     android:id="@+id/tvServiceName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Washing"
-                    android:textColor="@color/textPrimary"
+                    android:textColor="#CBD5E1"
                     android:textStyle="bold"
                     android:textSize="14sp"/>
             </LinearLayout>
@@ -100,19 +105,20 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Type:"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp"/>
+                    android:text="Type"
+                    android:textColor="#64748B"
+                    android:textSize="13sp"/>
                 <TextView
                     android:id="@+id/tvServiceType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Premium"
-                    android:textColor="@color/textPrimary"
+                    android:textColor="#CBD5E1"
                     android:textSize="14sp"/>
             </LinearLayout>
             
-             <LinearLayout
+            <!-- Items -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -120,19 +126,20 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Items:"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp"/>
+                    android:text="Items Count"
+                    android:textColor="#64748B"
+                    android:textSize="13sp"/>
                 <TextView
                     android:id="@+id/tvTotalItems"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="5 items"
-                    android:textColor="@color/textPrimary"
+                    android:textColor="#CBD5E1"
                     android:textSize="14sp"/>
             </LinearLayout>
             
-             <LinearLayout
+            <!-- Address -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -140,37 +147,38 @@
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Address:"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp"/>
+                    android:text="Pickup"
+                    android:textColor="#64748B"
+                    android:textSize="13sp"/>
                 <TextView
                     android:id="@+id/tvPickupAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="123 Main St"
-                    android:textColor="@color/textPrimary"
+                    android:textColor="#CBD5E1"
                     android:textSize="14sp"
-                    android:maxLines="2"
+                    android:maxLines="1"
                     android:ellipsize="end"/>
             </LinearLayout>
             
-             <LinearLayout
+            <!-- Date -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="24dp">
                 <TextView
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:text="Date:"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="14sp"/>
+                    android:text="Scheduled"
+                    android:textColor="#64748B"
+                    android:textSize="13sp"/>
                 <TextView
                     android:id="@+id/tvPickupDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Jun 20, 2026"
-                    android:textColor="@color/textPrimary"
+                    android:textColor="#CBD5E1"
                     android:textSize="14sp"/>
             </LinearLayout>
 
@@ -178,11 +186,16 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnUpdateStatus"
-            style="@style/WashMateButton"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Mark as Completed"
-            app:backgroundTint="@color/washmatePrimary" />
+            android:text="Update Order Status"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:cornerRadius="16dp"
+            app:backgroundTint="#1A259AF4"
+            app:strokeWidth="1dp"
+            app:strokeColor="#40259AF4"
+            android:textColor="@color/stitch_primary" />
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

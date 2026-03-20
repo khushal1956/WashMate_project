@@ -6,21 +6,21 @@ public class Feedback {
     private String feedbackId;
     private String orderId;
     private String customerId;
-    private int rating;
-    private String comments;
-    private Date createdAt;
+    private float rating;
+    private String comment;
+    private Date timestamp;
 
     public Feedback() {
         // Required for Firestore
     }
 
-    public Feedback(String feedbackId, String orderId, String customerId, int rating, String comments, Date createdAt) {
+    public Feedback(String feedbackId, String orderId, String customerId, float rating, String comment, Date timestamp) {
         this.feedbackId = feedbackId;
         this.orderId = orderId;
         this.customerId = customerId;
         this.rating = rating;
-        this.comments = comments;
-        this.createdAt = createdAt;
+        this.comment = comment;
+        this.timestamp = timestamp;
     }
 
     // Getters and Setters
@@ -33,12 +33,12 @@ public class Feedback {
     public String getCustomerId() { return customerId; }
     public void setCustomerId(String customerId) { this.customerId = customerId; }
 
-    public int getRating() { return rating; }
-    public void setRating(int rating) { this.rating = rating; }
+    public float getRating() { return rating; }
+    public void setRating(float rating) { this.rating = rating; }
 
-    public String getComments() { return comments; }
-    public void setComments(String comments) { this.comments = comments; }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 
-    public Date getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public Date getTimestamp() { return timestamp; }
+    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
 }

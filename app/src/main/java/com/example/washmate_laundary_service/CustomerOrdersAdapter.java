@@ -45,6 +45,7 @@ public class CustomerOrdersAdapter extends RecyclerView.Adapter<CustomerOrdersAd
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         private TextView tvServiceName, tvOrderId, tvStatus, tvItemDescription,
                 tvQuantity, tvPickupDate, tvPaymentMode, tvTotalAmount;
+        private android.widget.Button btnRateOrder;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -56,6 +57,7 @@ public class CustomerOrdersAdapter extends RecyclerView.Adapter<CustomerOrdersAd
             tvPickupDate = itemView.findViewById(R.id.tvPickupDate);
             tvPaymentMode = itemView.findViewById(R.id.tvPaymentMode);
             tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
+            btnRateOrder = itemView.findViewById(R.id.btnRateOrder);
         }
 
         public void bind(Order order) {
@@ -94,6 +96,19 @@ public class CustomerOrdersAdapter extends RecyclerView.Adapter<CustomerOrdersAd
                     statusColor = 0xFF9E9E9E; // Gray
             }
             tvStatus.setBackgroundColor(statusColor);
+
+            // Rate Order visibility
+            if ("Completed".equalsIgnoreCase(order.getStatus()) || "Delivered".equalsIgnoreCase(order.getStatus())) {
+                btnRateOrder.setVisibility(View.VISIBLE);
+                btnRateOrder.setOnClickListener(v -> {
+                    android.content.Context context = itemView.getContext();
+                    Intent intent = new Intent(context, FeedbackActivity.class);
+                    intent.putExtra("ORDER_ID", order.getOrderId());
+                    context.startActivity(intent);
+                });
+            } else {
+                btnRateOrder.setVisibility(View.GONE);
+            }
 
             // Click listener to track order
             itemView.setOnClickListener(v -> {

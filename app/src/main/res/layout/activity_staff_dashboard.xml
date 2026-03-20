@@ -4,128 +4,128 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/washmateBg"
+    android:background="#0A0F14"
+    android:fitsSystemWindows="true"
     tools:context=".StaffDashboardActivity">
 
-    <!-- Header -->
+    <!-- Abstract Gradient Background Effect -->
     <View
         android:id="@+id/headerBackgroundOverlay"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="@color/washmatePrimary"
+        android:layout_height="300dp"
+        android:background="@drawable/bg_gradient_primary"
+        android:alpha="0.1"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Logo -->
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/washmate_logo1"
-        android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Staff Header Section -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Logout Button -->
-    <ImageButton
-        android:id="@+id/btnLogout"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/circular_glass_bg"
-        android:src="@drawable/ic_logout"
-        app:tint="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_wm_premium"
+            android:scaleType="fitCenter" />
 
-    <!-- Greeting -->
-    <TextView
-        android:id="@+id/tvStaffName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:text="Hello, Staff Member"
-        android:textColor="@color/white"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvStaffName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Staff Dashboard"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your assigned tasks today"
+                android:textColor="#94A3B8"
+                android:textSize="12sp" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvSubtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="4dp"
-        android:text="Your assigned tasks today"
-        android:textColor="#CCFFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvStaffName" />
+        <ImageButton
+            android:id="@+id/btnLogout"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_glass_card"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:tint="#EF4444" />
+    </LinearLayout>
 
-    <!-- Content -->
+    <!-- Main Tasks List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAssignedOrders"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
         android:paddingBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <!-- Empty State -->
     <LinearLayout
         android:id="@+id/llEmptyState"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical"
+        android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/headerBackgroundOverlay">
+        android:padding="40dp"
+        app:layout_constraintTop_toTopOf="@id/rvAssignedOrders"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/ic_orders_vector"
-            app:tint="@color/washmatePrimary"
-            android:alpha="0.2" />
+            android:alpha="0.2"
+            app:tint="@color/stitch_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="No assigned tasks"
-            android:textColor="@color/textPrimary"
+            android:layout_marginTop="24dp"
+            android:text="No Active Tasks"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
-            
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You're all caught up!"
-            android:textColor="@color/textSecondary"
+            android:layout_marginTop="8dp"
+            android:text="You have no assigned orders at the moment."
+            android:textColor="#94A3B8"
             android:textSize="14sp"
-            android:layout_marginTop="8dp" />
+            android:textAlignment="center" />
     </LinearLayout>
 
-    <!-- Loading State -->
+    <!-- Loading Overlay -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:indeterminateTint="@color/washmatePrimary"
+        android:indeterminateTint="@color/stitch_primary"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,4 +57,15 @@
     <color name="cat_premium">#8B5CF6</color>
     <color name="lavender_blue">#E0E7FF</color>
     <color name="light_gray">#E0E0E0</color>
+    <!-- Stitch UI Redesign Colors -->
+    <color name="stitch_bg_dark">#101A22</color>
+    <color name="stitch_primary">#259AF4</color>
+    <color name="stitch_glass_bg">#0DFFFFFF</color> <!-- 5% white -->
+    <color name="stitch_glass_bg_light">#1AFFFFFF</color> <!-- 10% white -->
+    <color name="stitch_glass_stroke">#1AFFFFFF</color> <!-- 10% white -->
+    <color name="stitch_card_accent_blue">#1A3B82F6</color> <!-- blue/10% -->
+    <color name="stitch_card_accent_indigo">#1A6366F1</color> <!-- indigo/10% -->
+    <color name="stitch_card_accent_cyan">#1A06B6D4</color> <!-- cyan/10% -->
+    <color name="stitch_card_accent_purple">#1AA855F7</color> <!-- purple/10% -->
+    <color name="stitch_text_dim">#94A3B8</color>
 </resources>

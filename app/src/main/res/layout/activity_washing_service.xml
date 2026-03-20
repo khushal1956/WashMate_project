@@ -4,99 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/washmateBg"
+    android:background="#0A0F14"
+    android:fitsSystemWindows="true"
     tools:context=".WashingServiceActivity">
 
-    <!-- Header -->
+    <!-- Abstract Gradient Background Effect -->
     <View
-        android:id="@+id/headerBackground"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:background="@color/washmatePrimary"
+        android:layout_height="300dp"
+        android:background="@drawable/bg_gradient_primary"
+        android:alpha="0.05"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_arrow_back_24dp"
-        app:tint="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Sleek Header -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/washmate_logo1"
-        android:scaleType="fitCenter"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_glass_card"
+            android:src="@drawable/ic_arrow_back_24dp"
+            app:tint="#CBD5E1" />
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="24dp"
-        android:text="@string/service_washing"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/headerBackground"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/service_washing"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose a Plan"
+                android:textColor="#94A3B8"
+                android:textSize="12sp" />
+        </LinearLayout>
+        
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_wm_premium"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
 
     <!-- Service List -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/headerBackground"
+        android:paddingBottom="100dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Choose a Plan"
-                android:textColor="@color/textPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp">
 
             <!-- Regular Wash -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardRegularWash"
-                style="@style/WashMateCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1.2dp"
+                app:strokeColor="@color/stitch_glass_stroke"
+                app:cardBackgroundColor="@color/stitch_glass_bg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="20dp"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@android:drawable/ic_menu_rotate"
-                        app:tint="@color/washmatePrimary" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@drawable/ic_machine_vector"
+                        android:padding="8dp"
+                        android:background="@drawable/bg_glass_pill"
+                        app:tint="#259af4"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -109,15 +122,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/item_regular_wash"
-                            android:textColor="@color/textPrimary"
-                            android:textSize="16sp"
+                            android:textColor="@color/white"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/item_regular_wash_desc"
-                            android:textColor="@color/textSecondary"
+                            android:text="Standard cleaning for everyday wear"
+                            android:textColor="#94A3B8"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
@@ -125,8 +138,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₹50/kg"
-                        android:textColor="@color/washmatePrimary"
+                        android:text="₹100/Order"
+                        android:textColor="#259af4"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -135,25 +148,32 @@
             <!-- Delicate Wash -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardDelicateWash"
-                style="@style/WashMateCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1.2dp"
+                app:strokeColor="@color/stitch_glass_stroke"
+                app:cardBackgroundColor="@color/stitch_glass_bg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="20dp"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@android:drawable/ic_menu_compass"
-                        app:tint="@color/washmateAccent" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@drawable/ic_cloth_tshirt"
+                        android:padding="12dp"
+                        android:background="@drawable/bg_glass_pill"
+                        app:tint="#ec4899"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -166,15 +186,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/item_delicate_wash"
-                            android:textColor="@color/textPrimary"
-                            android:textSize="16sp"
+                            android:textColor="@color/white"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/item_delicate_wash_desc"
-                            android:textColor="@color/textSecondary"
+                            android:text="Gentle care for your finest fabrics"
+                            android:textColor="#94A3B8"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
@@ -182,8 +202,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₹80/kg"
-                        android:textColor="@color/washmateAccent"
+                        android:text="₹120/Order"
+                        android:textColor="#ec4899"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -192,25 +212,32 @@
             <!-- Express Wash -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardExpressWash"
-                style="@style/WashMateCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
-                android:focusable="true">
+                android:focusable="true"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1.2dp"
+                app:strokeColor="@color/stitch_glass_stroke"
+                app:cardBackgroundColor="@color/stitch_glass_bg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="16dp"
+                    android:padding="20dp"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@android:drawable/ic_menu_recent_history"
-                        app:tint="@color/washmatePrimaryDark" />
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@drawable/ic_delivery_van"
+                        android:padding="10dp"
+                        android:background="@drawable/bg_glass_pill"
+                        app:tint="#f59e0b"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -223,15 +250,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/item_express_wash"
-                            android:textColor="@color/textPrimary"
-                            android:textSize="16sp"
+                            android:textColor="@color/white"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/item_express_wash_desc"
-                            android:textColor="@color/textSecondary"
+                            android:text="Priority cleaning delivered same day"
+                            android:textColor="#94A3B8"
                             android:textSize="12sp"
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
@@ -239,8 +266,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="₹100/kg"
-                        android:textColor="@color/washmatePrimaryDark"
+                        android:text="₹150/Order"
+                        android:textColor="#f59e0b"
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -248,5 +275,12 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Navigation Bar -->
+    <include
+        layout="@layout/layout_bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

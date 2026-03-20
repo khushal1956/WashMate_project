@@ -28,9 +28,23 @@
             android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
+        <activity
+            android:name=".LanguageSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".LocationPickerActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="YOUR_API_KEY" />
+
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_test_1DP5mmOlF5G5ag" />
 
         <service
             android:name=".services.LocationService"
@@ -40,10 +54,12 @@
 
         <activity
             android:name=".ForgotPasswordActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
             android:name=".ProfileActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
@@ -64,15 +80,13 @@
 
         <activity
             android:name=".OrderActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
             android:name=".CustomerOrdersActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".TrackOrderActivity"
-            android:exported="false" />
 
         <activity
             android:name=".AdminOrdersActivity"
@@ -85,6 +99,7 @@
 
         <activity
             android:name=".AddStaffActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
@@ -93,6 +108,7 @@
 
         <activity
             android:name=".AddServiceActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
 
         <activity
@@ -101,10 +117,18 @@
 
         <activity
             android:name=".SupportActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".OrderSuccessActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ReportsActivity"
             android:exported="false" />
 
         <activity
@@ -115,6 +139,30 @@
             android:name=".ClothingSelectionActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PromosActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PaymentMethodsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".SavedAddressesActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".FeedbackActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".OrderTrackingActivity"
             android:exported="false" />
@@ -127,7 +175,7 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar"> <!-- Use NoActionBar theme for splash -->
+            android:theme="@style/Theme.WashMate_Laundary_Service"> <!-- Use main theme to support Material components -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

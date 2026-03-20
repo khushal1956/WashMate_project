@@ -1,27 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="#0A0F14"
     tools:context=".SplashActivity">
 
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="944dp"
-        android:layout_height="1164dp"
-        android:layout_gravity="center" />
+    <!-- Subtle Premium Glow -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_gradient_primary"
+        android:alpha="0.10" />
 
+    <!-- WashMate Logo Centered -->
+    <ImageView
+        android:id="@+id/ivSplashLogo"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:src="@drawable/ic_wm_premium"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <!-- "Loaded Line" Progress bar requested by user -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="48dp"
         android:layout_marginHorizontal="60dp"
+        android:layout_marginBottom="100dp"
         android:indeterminate="true"
-        android:indeterminateTint="@color/desertPrimary"
-        android:progressTint="@color/desertPrimary" />
+        android:indeterminateTint="#259af4"
+        android:progressTint="#259af4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</FrameLayout>
+    <!-- Branding Text below the progress bar -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="WashMate Premium"
+        android:textColor="#94A3B8"
+        android:textSize="14sp"
+        android:letterSpacing="0.1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

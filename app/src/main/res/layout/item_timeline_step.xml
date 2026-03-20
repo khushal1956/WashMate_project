@@ -3,47 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp">
 
-    <!-- Top Line -->
+    <!-- Timeline Indicator -->
     <View
         android:id="@+id/lineTop"
         android:layout_width="2dp"
         android:layout_height="24dp"
-        android:background="@color/light_gray"
+        android:background="@color/glass_white_10"
         app:layout_constraintStart_toStartOf="@id/ivStatusIcon"
         app:layout_constraintEnd_toEndOf="@id/ivStatusIcon"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/ivStatusIcon"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Status Icon -->
     <ImageView
         android:id="@+id/ivStatusIcon"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@drawable/ic_circle_outline"
-        app:tint="@color/textSecondary"
-        android:background="@drawable/bg_circle_white"
+        android:padding="6dp"
+        android:background="@drawable/circular_glass_bg"
+        app:tint="@color/glassTextSecondary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lineTop"/>
+        app:layout_constraintTop_toBottomOf="@id/lineTop" />
 
-    <!-- Bottom Line -->
     <View
         android:id="@+id/lineBottom"
         android:layout_width="2dp"
         android:layout_height="24dp"
-        android:background="@color/light_gray"
+        android:background="@color/glass_white_10"
         app:layout_constraintStart_toStartOf="@id/ivStatusIcon"
         app:layout_constraintEnd_toEndOf="@id/ivStatusIcon"
         app:layout_constraintTop_toBottomOf="@id/ivStatusIcon"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <!-- Text Info -->
+    <!-- Content Area -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="20dp"
+        android:paddingVertical="12dp"
         app:layout_constraintStart_toEndOf="@id/ivStatusIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/ivStatusIcon"
@@ -54,18 +54,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Order Placed"
-            android:textStyle="bold"
+            android:textColor="@color/glassTextSecondary"
             android:textSize="16sp"
-            android:textColor="@color/textSecondary"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvStepSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="We have received your order"
+            android:textColor="@color/glassTextSecondary"
             android:textSize="12sp"
-            android:textColor="@color/textSecondary"
-            android:visibility="visible"/>
+            android:alpha="0.7"
+            android:layout_marginTop="2dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

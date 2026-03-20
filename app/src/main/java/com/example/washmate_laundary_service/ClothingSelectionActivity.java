@@ -1,31 +1,24 @@
 package com.example.washmate_laundary_service;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.washmate_laundary_service.models.CartItem;
 import com.example.washmate_laundary_service.models.ClothingItem;
 import com.example.washmate_laundary_service.models.ServiceItem;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,155 +29,165 @@ public class ClothingSelectionActivity extends BaseActivity {
     private TextView tvCartCount, tvCartTotal;
     private MaterialButton btnContinue;
     private View btnBack;
+    private LinearLayout chipGroupCategories;
+    private TextView tvServiceCategory;
     
-    private List<ClothingItem> clothingList = new ArrayList<>();
-    private List<ServiceItem> availableServices = new ArrayList<>(); // from Firestore
+    private String selectedServiceName = "Standard Wash";
+    private String selectedServiceType = "washing";
+    private double servicePriceBase = 1.0;
+    
+    private List<ClothingItem> fullClothingList = new ArrayList<>();
+    private List<ClothingItem> filteredList = new ArrayList<>();
+    private List<ServiceItem> availableServices = new ArrayList<>();
     private List<CartItem> cart = new ArrayList<>();
     
-    // Mock Data for Clothes
-    private final String[] CLOTHING_NAMES = {"Shirt", "T-Shirt", "Jeans", "Trousers", "Saree", "Jacket", "Bedsheet", "Towel"};
-    private final int[] CLOTHING_ICONS = {
-            R.drawable.ic_cloth_shirt,
-            R.drawable.ic_cloth_tshirt,
-            R.drawable.ic_cloth_jeans,
-            R.drawable.ic_cloth_trousers,
-            R.drawable.ic_cloth_saree,
-            R.drawable.ic_cloth_jacket,
-            R.drawable.ic_cloth_bedsheet,
-            R.drawable.ic_cloth_towel
+    // Mock Data and Categories
+    private final String[] NAMES = {"Shirt", "T-Shirt", "Jeans", "Trousers", "Saree", "Jacket", "Bedsheet", "Towel", "Premium Dress", "Bed Linens"};
+    private final String[] CATEGORIES = {"Tops", "Tops", "Bottoms", "Bottoms", "Outerwear", "Outerwear", "Bedding", "Bedding", "Outerwear", "Bedding"};
+    private final int[] ICONS = {
+            R.drawable.ic_cloth_shirt_vibrant, R.drawable.ic_cloth_tshirt_vibrant,
+            R.drawable.ic_cloth_jeans_vibrant, R.drawable.ic_cloth_trousers_vibrant,
+            R.drawable.ic_cloth_saree_vibrant, R.drawable.ic_cat_outerwear,
+            R.drawable.ic_cloth_bedsheet_vibrant, R.drawable.ic_cloth_towel_vibrant,
+            R.drawable.ic_cloth_premium_dress_vibrant, R.drawable.ic_cloth_bedsheet_vibrant
     };
+    private final double[] PRICES = {120, 80, 250, 220, 450, 350, 300, 150, 650, 400};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clothing_selection);
 
+        initializeViews();
+        setupCategories();
+        loadServicesAndItems();
+        updateCartUI();
+    }
+
+    private void initializeViews() {
         rvClothingItems = findViewById(R.id.rvClothingItems);
         tvCartCount = findViewById(R.id.tvCartCount);
         tvCartTotal = findViewById(R.id.tvCartTotal);
         btnContinue = findViewById(R.id.btnContinue);
         btnBack = findViewById(R.id.btnBack);
+        chipGroupCategories = findViewById(R.id.chipGroupCategories);
+        tvServiceCategory = findViewById(R.id.tvServiceCategory);
 
-        if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
+        // Get extras from Intent
+        if (getIntent().hasExtra("SERVICE_NAME")) {
+            selectedServiceName = getIntent().getStringExtra("SERVICE_NAME");
+            selectedServiceType = getIntent().getStringExtra("SERVICE_TYPE");
+            servicePriceBase = getIntent().getDoubleExtra("SERVICE_PRICE", 1.0);
         }
 
-        setupRecyclerView();
-        loadServicesFromFirestore();
-        updateCartUI();
-        
+        if (tvServiceCategory != null) tvServiceCategory.setText(selectedServiceName.toUpperCase());
+
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
         btnContinue.setOnClickListener(v -> proceedToCheckout());
     }
 
-    private void setupRecyclerView() {
-        // Populate mock data
-        clothingList.clear();
-        for (int i = 0; i < CLOTHING_NAMES.length; i++) {
-            clothingList.add(new ClothingItem(CLOTHING_NAMES[i], CLOTHING_ICONS[i]));
-        }
+    private void setupCategories() {
+        View.OnClickListener clickListener = v -> {
+            updateChipStyles((TextView) v);
+            filterByCategory(((TextView) v).getText().toString());
+        };
 
-        ClothingAdapter adapter = new ClothingAdapter(clothingList, this::openServiceConfigurationDialog);
-        rvClothingItems.setLayoutManager(new GridLayoutManager(this, 2));
+        findViewById(R.id.chipTops).setOnClickListener(clickListener);
+        findViewById(R.id.chipBottoms).setOnClickListener(clickListener);
+        findViewById(R.id.chipBedding).setOnClickListener(clickListener);
+        findViewById(R.id.chipOuterwear).setOnClickListener(clickListener);
+    }
+
+    private void updateChipStyles(TextView selectedChip) {
+        int[] chipIds = {R.id.chipTops, R.id.chipBottoms, R.id.chipBedding, R.id.chipOuterwear};
+        for (int id : chipIds) {
+            TextView chip = findViewById(id);
+            if (chip == selectedChip) {
+                chip.setBackgroundResource(R.drawable.bg_gradient_primary);
+                chip.setTextColor(getResources().getColor(android.R.color.white));
+            } else {
+                chip.setBackgroundResource(R.drawable.bg_glass_card);
+                chip.setTextColor(Color.parseColor("#94A3B8"));
+            }
+        }
+    }
+
+    private void loadServicesAndItems() {
+        // Prepare items with initial data and dynamic pricing
+        fullClothingList.clear();
+        for (int i = 0; i < NAMES.length; i++) {
+            ClothingItem item = new ClothingItem(NAMES[i], ICONS[i]);
+            
+            // Apply logic for pricing based on service type
+            double baseItemPrice = PRICES[i];
+            double finalItemPrice = baseItemPrice;
+            
+            if ("washing".equalsIgnoreCase(selectedServiceType)) {
+                // For washing, PRICES array might be base, or we use servicePriceBase as multiplier
+                finalItemPrice = baseItemPrice; // Let's keep base for washing
+            } else if ("dry_cleaning".equalsIgnoreCase(selectedServiceType)) {
+                finalItemPrice = servicePriceBase > 1.0 ? servicePriceBase : baseItemPrice * 1.5;
+            } else if ("ironing".equalsIgnoreCase(selectedServiceType)) {
+                finalItemPrice = servicePriceBase; // Fixed price per item for ironing
+            } else if ("premium".equalsIgnoreCase(selectedServiceType)) {
+                finalItemPrice = servicePriceBase > 1.0 ? servicePriceBase : baseItemPrice * 2.0;
+            }
+            
+            item.setPrice(finalItemPrice);
+            item.setCategory(CATEGORIES[i]);
+            fullClothingList.add(item);
+        }
+        
+        // Mocking available services
+        availableServices.clear();
+        availableServices.add(new ServiceItem("1", selectedServiceName, servicePriceBase));
+
+        filterByCategory("Tops"); // Default
+    }
+
+    private void filterByCategory(String category) {
+        filteredList.clear();
+        for (ClothingItem item : fullClothingList) {
+            if (item.getCategory().equalsIgnoreCase(category)) {
+                filteredList.add(item);
+            }
+        }
+        setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
+        GlassClothingAdapter adapter = new GlassClothingAdapter(filteredList, selectedServiceType, new GlassClothingAdapter.OnQuantityChangeListener() {
+            @Override
+            public void onQuantityChanged(ClothingItem item, int newQty) {
+                updateItemInCart(item, newQty);
+            }
+        });
+        rvClothingItems.setLayoutManager(new LinearLayoutManager(this));
         rvClothingItems.setAdapter(adapter);
     }
 
-    private void loadServicesFromFirestore() {
-        FirebaseFirestore.getInstance().collection("LAUNDRY_SERVICES")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    availableServices.clear();
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        String name = doc.getString("serviceName");
-                        Double price = doc.getDouble("price");
-                        if (name != null && price != null) {
-                            availableServices.add(new ServiceItem(doc.getId(), name, price));
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to load service prices", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void openServiceConfigurationDialog(ClothingItem item) {
-        if (availableServices.isEmpty()) {
-            Toast.makeText(this, "Loading services...", Toast.LENGTH_SHORT).show();
-            return; // Wait for services to load
-        }
-
-        BottomSheetDialog dialog = new BottomSheetDialog(this);
-        dialog.setContentView(R.layout.dialog_service_options);
-
-        TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
-        ChipGroup chipGroup = dialog.findViewById(R.id.chipGroupServices);
-        TextView tvQuantity = dialog.findViewById(R.id.tvDialogQuantity);
-        ImageButton btnDecrease = dialog.findViewById(R.id.btnDialogDecrease);
-        ImageButton btnIncrease = dialog.findViewById(R.id.btnDialogIncrease);
-        MaterialButton btnAddToCart = dialog.findViewById(R.id.btnAddToCart);
-
-        if (tvTitle != null) tvTitle.setText("Configure " + item.getName());
-
-        // Populate Chips
-        List<ServiceItem> tempSelectedServices = new ArrayList<>();
-        if (chipGroup != null) {
-            for (ServiceItem service : availableServices) {
-                Chip chip = new Chip(this);
-                chip.setText(service.getName() + " (₹" + (int)service.getPrice() + ")");
-                chip.setCheckable(true);
-                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) tempSelectedServices.add(service);
-                    else tempSelectedServices.remove(service);
-                    updateDialogButton(btnAddToCart, Integer.parseInt(tvQuantity.getText().toString()), tempSelectedServices);
-                });
-                chipGroup.addView(chip);
+    private void updateItemInCart(ClothingItem item, int qty) {
+        // Find if already in cart
+        CartItem existing = null;
+        for (CartItem ci : cart) {
+            if (ci.getClothingName().equals(item.getName())) {
+                existing = ci;
+                break;
             }
         }
-        
-        final int[] quantity = {1};
-        updateDialogButton(btnAddToCart, quantity[0], tempSelectedServices);
 
-        if (btnDecrease != null) {
-            btnDecrease.setOnClickListener(v -> {
-                if (quantity[0] > 1) {
-                    quantity[0]--;
-                    if (tvQuantity != null) tvQuantity.setText(String.valueOf(quantity[0]));
-                    updateDialogButton(btnAddToCart, quantity[0], tempSelectedServices);
-                }
-            });
+        if (qty > 0) {
+            if (existing != null) {
+                existing.setQuantity(qty);
+            } else {
+                List<ServiceItem> services = new ArrayList<>();
+                services.add(new ServiceItem("wash", "WashMate", item.getPrice()));
+                cart.add(new CartItem(item.getName(), qty, services));
+            }
+        } else if (existing != null) {
+            cart.remove(existing);
         }
-
-        if (btnIncrease != null) {
-            btnIncrease.setOnClickListener(v -> {
-                quantity[0]++;
-                if (tvQuantity != null) tvQuantity.setText(String.valueOf(quantity[0]));
-                updateDialogButton(btnAddToCart, quantity[0], tempSelectedServices);
-            });
-        }
-
-        if (btnAddToCart != null) {
-            btnAddToCart.setOnClickListener(v -> {
-                if (tempSelectedServices.isEmpty()) {
-                    Toast.makeText(this, "Select at least one service", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                
-                // Add to Cart
-                CartItem cartItem = new CartItem(item.getName(), quantity[0], new ArrayList<>(tempSelectedServices));
-                cart.add(cartItem);
-                updateCartUI();
-                dialog.dismiss();
-            });
-        }
-
-        dialog.show();
-    }
-    
-    private void updateDialogButton(MaterialButton btn, int qty, List<ServiceItem> services) {
-        if (btn == null) return;
-        double total = 0;
-        for (ServiceItem s : services) total += s.getPrice();
-        total *= qty;
-        btn.setText("Add to Cart - ₹" + (int)total);
+        updateCartUI();
     }
 
     private void updateCartUI() {
@@ -192,61 +195,60 @@ public class ClothingSelectionActivity extends BaseActivity {
         double totalPrice = 0;
         for (CartItem item : cart) {
             totalItems += item.getQuantity();
-            totalPrice += item.getTotalPrice(); // CartItem logic handles calc
+            totalPrice += item.getTotalPrice();
         }
         
         tvCartCount.setText(totalItems + " Items Selected");
-        tvCartTotal.setText("Total: ₹" + (int)totalPrice);
+        tvCartTotal.setText(String.format(Locale.getDefault(), "₹%.2f", totalPrice));
         
         btnContinue.setEnabled(totalItems > 0);
-        btnContinue.setAlpha(totalItems > 0 ? 1.0f : 0.5f);
+        btnContinue.setAlpha(totalItems > 0 ? 1.0f : 0.6f);
     }
-    
+
     private void proceedToCheckout() {
         if (cart.isEmpty()) return;
         
-        // Flatten cart to description string
         StringBuilder builder = new StringBuilder();
         double finalPrice = 0;
         int finalQty = 0;
         
         for (CartItem item : cart) {
             finalQty += item.getQuantity();
-            finalPrice += item.getTotalPrice(); // Assuming CartItem calculates correct total
-            
+            finalPrice += item.getTotalPrice();
             if (builder.length() > 0) builder.append(" | ");
-            builder.append(item.getClothingName())
-                   .append(" (")
-                   .append(item.getServicesSummary())
-                   .append(") x")
-                   .append(item.getQuantity());
+            builder.append(item.getClothingName()).append(" x").append(item.getQuantity());
         }
 
         Intent intent = new Intent(this, OrderActivity.class);
         intent.putExtra("CART_DESCRIPTION", builder.toString());
         intent.putExtra("CART_TOTAL_PRICE", finalPrice);
         intent.putExtra("CART_TOTAL_QTY", finalQty);
+        intent.putExtra("SERVICE_NAME", selectedServiceName);
+        intent.putExtra("SERVICE_TYPE", selectedServiceType);
+        intent.putExtra("SERVICE_PRICE", servicePriceBase);
         startActivity(intent);
     }
 
     // INTERNAL ADAPTER
-    private static class ClothingAdapter extends RecyclerView.Adapter<ClothingAdapter.ViewHolder> {
+    private static class GlassClothingAdapter extends RecyclerView.Adapter<GlassClothingAdapter.ViewHolder> {
         private List<ClothingItem> items;
-        private OnItemClickListener listener;
+        private OnQuantityChangeListener listener;
+        private String serviceType;
 
-        interface OnItemClickListener {
-            void onItemClick(ClothingItem item);
+        interface OnQuantityChangeListener {
+            void onQuantityChanged(ClothingItem item, int newQty);
         }
 
-        public ClothingAdapter(List<ClothingItem> items, OnItemClickListener listener) {
+        public GlassClothingAdapter(List<ClothingItem> items, String serviceType, OnQuantityChangeListener listener) {
             this.items = items;
+            this.serviceType = serviceType;
             this.listener = listener;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clothing_category, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_clothing_glass, parent, false);
             return new ViewHolder(v);
         }
 
@@ -254,23 +256,55 @@ public class ClothingSelectionActivity extends BaseActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             ClothingItem item = items.get(position);
             holder.tvName.setText(item.getName());
+            holder.tvPrice.setText(String.format(Locale.getDefault(), "₹%.0f", item.getPrice()));
             holder.ivIcon.setImageResource(item.getIconResId());
-            holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
+            
+            // Dynamic Tinting based on Service Type
+            int themeColor = Color.parseColor("#3b82f6"); // Default Wash Blue
+            if ("dry_cleaning".equalsIgnoreCase(serviceType)) {
+                themeColor = Color.parseColor("#c084fc"); // Purple
+            } else if ("ironing".equalsIgnoreCase(serviceType)) {
+                themeColor = Color.parseColor("#eab308"); // Amber/Gold
+            } else if ("premium".equalsIgnoreCase(serviceType)) {
+                themeColor = Color.parseColor("#a855f7"); // Indigo/Purple
+            }
+            holder.ivIcon.setColorFilter(themeColor, android.graphics.PorterDuff.Mode.SRC_IN);
+            
+            holder.tvQty.setText(String.valueOf(item.getQuantity()));
+
+            holder.btnPlus.setOnClickListener(v -> {
+                int q = item.getQuantity() + 1;
+                item.setQuantity(q);
+                holder.tvQty.setText(String.valueOf(q));
+                listener.onQuantityChanged(item, q);
+            });
+
+            holder.btnMinus.setOnClickListener(v -> {
+                if (item.getQuantity() > 0) {
+                    int q = item.getQuantity() - 1;
+                    item.setQuantity(q);
+                    holder.tvQty.setText(String.valueOf(q));
+                    listener.onQuantityChanged(item, q);
+                }
+            });
         }
 
         @Override
-        public int getItemCount() {
-            return items.size();
-        }
+        public int getItemCount() { return items.size(); }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvName;
+            TextView tvName, tvPrice, tvQty;
             ImageView ivIcon;
+            View btnPlus, btnMinus;
             
-            ViewHolder(View itemView) {
-                super(itemView);
-                tvName = itemView.findViewById(R.id.tvClothingName);
-                ivIcon = itemView.findViewById(R.id.ivClothingIcon);
+            ViewHolder(View v) {
+                super(v);
+                tvName = v.findViewById(R.id.tvClothingName);
+                tvPrice = v.findViewById(R.id.tvClothingPrice);
+                tvQty = v.findViewById(R.id.tvQuantity);
+                ivIcon = v.findViewById(R.id.ivClothingIcon);
+                btnPlus = v.findViewById(R.id.btnIncrease);
+                btnMinus = v.findViewById(R.id.btnDecrease);
             }
         }
     }

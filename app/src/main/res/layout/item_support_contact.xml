@@ -4,21 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    style="@style/GlassCardPremium">
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#1E293B"
+    app:cardBackgroundColor="#0F172A">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/washmate_logo1"
-            android:padding="8dp"
-            android:background="@drawable/circular_glass_bg"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.Circle"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_wm_premium"
+            android:padding="12dp"
+            android:background="#0AFFFFFF"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
@@ -27,9 +31,9 @@
             android:id="@+id/tvName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Name"
-            android:textColor="@color/desertDark"
+            android:layout_marginStart="20dp"
+            android:text="Administrator"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/ivAvatar"
@@ -43,7 +47,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             app:layout_constraintStart_toEndOf="@id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@id/tvName"
             app:layout_constraintEnd_toEndOf="parent">
@@ -52,15 +56,15 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@android:drawable/ic_menu_call"
-                app:tint="@color/desertPrimary" />
+                app:tint="@color/stitch_primary" />
 
             <TextView
                 android:id="@+id/tvPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="123456789"
-                android:textColor="@color/textColorSecondary"
+                android:text="+91 12345 67890"
+                android:textColor="#94A3B8"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -71,7 +75,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="4dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             app:layout_constraintStart_toEndOf="@id/ivAvatar"
             app:layout_constraintTop_toBottomOf="@id/llPhone"
             app:layout_constraintEnd_toEndOf="parent">
@@ -80,15 +84,15 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@android:drawable/ic_dialog_email"
-                app:tint="@color/desertPrimary" />
+                app:tint="@color/stitch_primary" />
 
             <TextView
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="email@example.com"
-                android:textColor="@color/textColorSecondary"
+                android:text="support@washmate.com"
+                android:textColor="#94A3B8"
                 android:textSize="14sp" />
         </LinearLayout>
 
