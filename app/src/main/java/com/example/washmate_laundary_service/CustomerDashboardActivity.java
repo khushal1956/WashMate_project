@@ -35,9 +35,20 @@ public class CustomerDashboardActivity extends BaseActivity {
     private androidx.drawerlayout.widget.DrawerLayout drawerLayout;
     private com.google.android.material.navigation.NavigationView navigationView;
     private ImageButton btnMenu, btnNotification;
+    private List<com.example.washmate_laundary_service.models.PromoItem> promoList;
+
     
+    private TextView tvFeaturedTitle, tvFeaturedSub, tvFeaturedCode;
+    private View layoutPromoBadge;
+    private View layoutSpecialOfferHeader;
+
+
+
+
+
     // Bottom Nav
     private BottomNavigationView bottomNavigation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +57,15 @@ public class CustomerDashboardActivity extends BaseActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mFirestore = FirebaseFirestore.getInstance();
+        promoList = new ArrayList<>();
+
 
         initializeViews();
         setupDrawer();
         fetchUserData();
         setupServiceCards();
+        fetchPromosFromFirestore();
+
     }
 
     private void initializeViews() {
@@ -64,6 +79,22 @@ public class CustomerDashboardActivity extends BaseActivity {
         tvHeaderName = headerView.findViewById(R.id.tvHeaderName);
         tvHeaderEmail = headerView.findViewById(R.id.tvHeaderEmail);
         
+        // Featured Offer Views
+        tvFeaturedTitle = findViewById(R.id.tvFeaturedTitle);
+        tvFeaturedSub = findViewById(R.id.tvFeaturedSub);
+        tvFeaturedCode = findViewById(R.id.tvFeaturedCode);
+        layoutPromoBadge = findViewById(R.id.layoutPromoBadge);
+        layoutSpecialOfferHeader = findViewById(R.id.layoutSpecialOfferHeader);
+
+        
+        if (layoutSpecialOfferHeader != null) {
+            layoutSpecialOfferHeader.setVisibility(View.GONE);
+        }
+
+
+
+
+        
         setupBottomNavigation(R.id.nav_home);
         
         // Profile Icon trigger
@@ -76,16 +107,9 @@ public class CustomerDashboardActivity extends BaseActivity {
         if (btnMenu != null) {
             btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         }
+        
 
-        // Pulse animation for Offer Tag
-        View tagFirstOrder = findViewById(R.id.tagFirstOrder);
-        if (tagFirstOrder != null) {
-            Animation pulse = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-            pulse.setDuration(1200);
-            pulse.setRepeatMode(Animation.REVERSE);
-            pulse.setRepeatCount(Animation.INFINITE);
-            tagFirstOrder.startAnimation(pulse);
-        }
+    
     }
 
     
@@ -148,25 +172,62 @@ public class CustomerDashboardActivity extends BaseActivity {
         
         View cardPremium = findViewById(R.id.cardPremium);
         if (cardPremium != null) cardPremium.setOnClickListener(v -> startActivity(new Intent(this, PremiumServiceActivity.class)));
-
-        // Claim Offer logic
-        View btnClaimOffer1 = findViewById(R.id.btnClaimOffer1);
-        if (btnClaimOffer1 != null) {
-            btnClaimOffer1.setOnClickListener(v -> {
-                // Animation feedback
-                v.animate().scaleX(1.1f).scaleY(1.1f).setDuration(100).withEndAction(() -> {
-                    v.animate().scaleX(1f).scaleY(1f).setDuration(100).withEndAction(() -> {
-                        Intent intent = new Intent(this, ClothingSelectionActivity.class);
-                        intent.putExtra("SERVICE_NAME", "First Order Offer");
-                        intent.putExtra("SERVICE_TYPE", "washing");
-                        intent.putExtra("SERVICE_PRICE", 0.7); // 30% off multiplier
-                        startActivity(intent);
-                    });
-                });
-                Toast.makeText(this, "🎉 Offer Applied! 30% discount will be added to your first order.", Toast.LENGTH_LONG).show();
-            });
-        }
     }
+
+
+
+    private void fetchPromosFromFirestore() {
+        mFirestore.collection(com.example.washmate_laundary_service.utils.FirebaseConstants.COLLECTION_PROMOTIONS)
+                .orderBy("title") // or any order
+                .limit(5) // Just show first 5 for dashboard
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) return;
+                    if (value != null) {
+                        promoList.clear();
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            com.example.washmate_laundary_service.models.PromoItem item = doc.toObject(com.example.washmate_laundary_service.models.PromoItem.class);
+                            if (item != null) {
+                                item.setId(doc.getId());
+                                promoList.add(item);
+                            }
+                        }
+                        
+                        // Update Featured Offer with the first promo if available
+
+                        if (!promoList.isEmpty()) {
+                            com.example.washmate_laundary_service.models.PromoItem firstPromo = promoList.get(0);
+                            if (tvFeaturedTitle != null) tvFeaturedTitle.setText(firstPromo.getTitle());
+                            if (tvFeaturedSub != null) tvFeaturedSub.setText(firstPromo.getDescription());
+                            if (tvFeaturedCode != null) tvFeaturedCode.setText(firstPromo.getCode());
+                            
+                            if (layoutPromoBadge != null) {
+                                layoutPromoBadge.setOnClickListener(v -> {
+                                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                                    android.content.ClipData clip = android.content.ClipData.newPlainText("Promo Code", firstPromo.getCode());
+                                    if (clipboard != null) {
+                                        clipboard.setPrimaryClip(clip);
+                                        Toast.makeText(this, "Promo Code " + firstPromo.getCode() + " copied!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+                            if (layoutSpecialOfferHeader != null && layoutSpecialOfferHeader.getVisibility() != View.VISIBLE) {
+                                layoutSpecialOfferHeader.setAlpha(0f);
+                                layoutSpecialOfferHeader.setVisibility(View.VISIBLE);
+                                layoutSpecialOfferHeader.animate().alpha(1f).setDuration(500).start();
+                            }
+
+                        } else {
+                            if (layoutSpecialOfferHeader != null) {
+                                layoutSpecialOfferHeader.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+
+
+                });
+    }
+
 
     @Override
     protected void onPause() {

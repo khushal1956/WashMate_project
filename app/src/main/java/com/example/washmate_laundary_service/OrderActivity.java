@@ -60,8 +60,12 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
     
     private LinearLayout cardDatePicker;
     private RadioGroup rgOnlinePaymentMethod;
-    private MaterialButton btnPlaceOrder, btnPickOnMap;
+    private MaterialButton btnPlaceOrder, btnPickOnMap, btnApplyPromo;
     private BottomNavigationView bottomNavigation;
+    private TextInputEditText etPromoCode;
+    private double appliedDiscount = 0.0;
+    private com.example.washmate_laundary_service.models.PromoItem appliedPromo = null;
+
     
     private ActivityResultLauncher<Intent> locationPickerLauncher;
     private String serviceName;
@@ -196,7 +200,12 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
         btnPlaceOrder = findViewById(R.id.btnPlaceOrder);
         btnPickOnMap = findViewById(R.id.btnPickOnMap);
         
+        // Promo Code
+        etPromoCode = findViewById(R.id.etPromoCode);
+        btnApplyPromo = findViewById(R.id.btnApplyPromo);
+
         // RecyclerView (Hidden in redesign, but kept for data logic if needed)
+
         rvServices = findViewById(R.id.rvServices);
         if (rvServices != null) {
             rvServices.setLayoutManager(new LinearLayoutManager(this));
@@ -218,7 +227,81 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
                 locationPickerLauncher.launch(intent);
             });
         }
+
+        if (btnApplyPromo != null) {
+            btnApplyPromo.setOnClickListener(v -> applyPromoCode());
+        }
     }
+
+    private void applyPromoCode() {
+        String code = etPromoCode.getText().toString().trim();
+        if (TextUtils.isEmpty(code)) {
+            Toast.makeText(this, "Please enter a promo code", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        btnApplyPromo.setEnabled(false);
+        btnApplyPromo.setText("...");
+
+        mFirestore.collection("promotions")
+                .whereEqualTo("code", code.toUpperCase())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    btnApplyPromo.setEnabled(true);
+                    btnApplyPromo.setText("Apply");
+
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        com.example.washmate_laundary_service.models.PromoItem promo = 
+                            queryDocumentSnapshots.getDocuments().get(0).toObject(com.example.washmate_laundary_service.models.PromoItem.class);
+                        
+                        if (promo != null) {
+                            appliedPromo = promo;
+                            calculateDiscount();
+                            updateTotalAmount();
+                            Toast.makeText(this, "Promo code applied!", Toast.LENGTH_SHORT).show();
+                            etPromoCode.setEnabled(false);
+                            btnApplyPromo.setText("Applied");
+                            btnApplyPromo.setEnabled(false);
+                        }
+                    } else {
+                        Toast.makeText(this, "Invalid promo code", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    btnApplyPromo.setEnabled(true);
+                    btnApplyPromo.setText("Apply");
+                    Toast.makeText(this, "Error validating promo code", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void calculateDiscount() {
+        if (appliedPromo == null) {
+            appliedDiscount = 0.0;
+            return;
+        }
+
+        double baseTotal = 0.0;
+        if (isCartFlow) {
+            baseTotal = serviceCharge;
+        } else {
+            for (ServiceItem item : serviceList) {
+                baseTotal += (item.getPrice() * item.getQuantity());
+            }
+        }
+
+        if ("PERCENT".equalsIgnoreCase(appliedPromo.getDiscountType())) {
+            appliedDiscount = baseTotal * (appliedPromo.getDiscountValue() / 100.0);
+        } else {
+            appliedDiscount = appliedPromo.getDiscountValue();
+        }
+
+        // Round to 2 decimal places
+        appliedDiscount = Math.round(appliedDiscount * 100.0) / 100.0;
+        
+        // Cap discount at total
+        if (appliedDiscount > baseTotal) appliedDiscount = baseTotal;
+    }
+
 
     private void showDatePicker() {
         Calendar minDate = Calendar.getInstance();
@@ -258,9 +341,20 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
         // Ensure minimum 0
         if (total < 0) total = 0;
 
+        // Apply discount if any
+        double finalTotal = total - appliedDiscount;
+        if (finalTotal < 0) finalTotal = 0;
+
         tvServiceCharge.setText("₹" + String.format(Locale.getDefault(), "%.0f", total));
-        tvTotalAmount.setText("₹" + String.format(Locale.getDefault(), "%.0f", total));
+        
+        if (appliedDiscount > 0) {
+            tvTotalAmount.setText("₹" + String.format(Locale.getDefault(), "%.0f", finalTotal) + 
+                " (Disc: ₹" + String.format(Locale.getDefault(), "%.0f", appliedDiscount) + ")");
+        } else {
+            tvTotalAmount.setText("₹" + String.format(Locale.getDefault(), "%.0f", finalTotal));
+        }
     }
+
 
     private void validateAndPlaceOrder() {
         // Get form values
@@ -367,20 +461,23 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
         }
         
         // Place order
+        double finalTotalAmount = calculatedTotalAmount - appliedDiscount;
+        if (finalTotalAmount < 0) finalTotalAmount = 0;
+
         if (paymentMode.equals("Online")) {
             // Start Razorpay Payment
-            startPayment(calculatedTotalAmount);
+            startPayment(finalTotalAmount);
         } else {
              // For COD or other methods (if any in future)
-             placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, paymentMode, paymentMethod, "Pending", calculatedTotalAmount);
+             placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, paymentMode, paymentMethod, "Pending", finalTotalAmount);
         }
     }
+
 
     private void startPayment(double amount) {
         final Activity activity = this;
         final Checkout co = new Checkout();
-        // Replace with your actual Test Key ID
-        co.setKeyID("rzp_test_1DP5mmOlF5G5ag"); 
+        co.setKeyID(com.example.washmate_laundary_service.utils.FirebaseConstants.RAZORPAY_KEY_ID); 
 
         try {
             JSONObject options = new JSONObject();
@@ -399,7 +496,7 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
             } else {
                 prefill.put("email", "customer@washmate.com"); // fallback if email is null
             }
-            prefill.put("contact", "9999999999"); // Fallback contact requested by some test keys
+            prefill.put("contact", mAuth.getCurrentUser().getPhoneNumber() != null ? mAuth.getCurrentUser().getPhoneNumber() : "9999999999");
             options.put("prefill", prefill);
 
             co.open(activity, options);
@@ -421,18 +518,22 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
         try {
             Log.e("RazorpayError", "Code: " + code + ", Response: " + response);
             
-            // DEMO SIMULATOR: Since the user does not have a real Razorpay account,
-            // we simulate a successful payment if the Razorpay UI fails or cancels.
-            Toast.makeText(this, "Razorpay account missing. Simulating payment success for Demo...", Toast.LENGTH_LONG).show();
-            
-            processSuccessfulOrder();
+            btnPlaceOrder.setEnabled(true);
+            btnPlaceOrder.setText("Place Order");
+
+            if (code == Checkout.PAYMENT_CANCELED) {
+                Toast.makeText(this, "Payment cancelled", Toast.LENGTH_SHORT).show();
+            } else if (code == Checkout.NETWORK_ERROR) {
+                Toast.makeText(this, "Network error. Please try again.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Payment Error: " + response, Toast.LENGTH_SHORT).show();
+            }
             
         } catch (Exception e) {
             Log.e("OrderActivity", "Exception in onPaymentError", e);
-            btnPlaceOrder.setEnabled(true);
-            btnPlaceOrder.setText("Place Order");
         }
     }
+
 
     private void processSuccessfulOrder() {
         // Get stored values to place order
@@ -486,8 +587,12 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
         }
         
         // Place order in Firestore
-        placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, paymentMode, paymentMethod, "Paid", calculatedTotalAmount);
+        double finalTotalAmount = calculatedTotalAmount - appliedDiscount;
+        if (finalTotalAmount < 0) finalTotalAmount = 0;
+        
+        placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, paymentMode, paymentMethod, "Paid", finalTotalAmount);
     }
+
 
     private void placeOrder(String itemDescription, int quantity, String address, String city, 
                            String pincode, String pickupDate, String paymentMode, String paymentMethod, String paymentStatus, double totalAmount) {

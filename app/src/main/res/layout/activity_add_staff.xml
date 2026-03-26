@@ -94,17 +94,19 @@
                         app:boxBackgroundColor="@android:color/transparent"
                         app:boxStrokeWidth="0dp"
                         app:boxStrokeWidthFocused="0dp"
-                        app:hintTextColor="@color/stitch_primary"
-                        android:hint="Full Name"
-                        app:startIconDrawable="@android:drawable/ic_menu_edit"
-                        app:startIconTint="#94A3B8">
+                        app:hintEnabled="false"
+                        app:startIconDrawable="@drawable/ic_pencil"
+                        app:startIconTint="@color/black">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffFullName"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="16dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_field_white"
+                            android:hint="Full Name"
                             android:inputType="textPersonName"
-                            android:textColor="@color/white" />
+                            android:paddingHorizontal="16dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="#94A3B8" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Email -->
@@ -116,17 +118,19 @@
                         app:boxBackgroundColor="@android:color/transparent"
                         app:boxStrokeWidth="0dp"
                         app:boxStrokeWidthFocused="0dp"
-                        app:hintTextColor="@color/stitch_primary"
-                        android:hint="Email Address"
-                        app:startIconDrawable="@android:drawable/ic_dialog_email"
-                        app:startIconTint="#94A3B8">
+                        app:hintEnabled="false"
+                        app:startIconDrawable="@drawable/ic_mail"
+                        app:startIconTint="@color/black">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffEmail"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="16dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_field_white"
+                            android:hint="Email Address"
                             android:inputType="textEmailAddress"
-                            android:textColor="@color/white" />
+                            android:paddingHorizontal="16dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="#94A3B8" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Mobile -->
@@ -138,20 +142,22 @@
                         app:boxBackgroundColor="@android:color/transparent"
                         app:boxStrokeWidth="0dp"
                         app:boxStrokeWidthFocused="0dp"
-                        app:hintTextColor="@color/stitch_primary"
-                        android:hint="Mobile Number"
-                        app:startIconDrawable="@android:drawable/ic_menu_call"
-                        app:startIconTint="#94A3B8">
+                        app:hintEnabled="false"
+                        app:startIconDrawable="@drawable/ic_phone"
+                        app:startIconTint="@color/black">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffMobile"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="16dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_field_white"
+                            android:hint="Mobile Number"
                             android:inputType="phone"
-                            android:textColor="@color/white" />
+                            android:paddingHorizontal="16dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="#94A3B8" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Staff Role Selector -->
+                    <!-- Staff Role Selector Label -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -164,19 +170,44 @@
                     
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        app:cardCornerRadius="20dp"
+                        android:layout_height="64dp"
+                        app:cardCornerRadius="16dp"
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#1E293B"
-                        app:cardBackgroundColor="#0AFFFFFF"
+                        app:strokeColor="#E2E8F0"
+                        app:cardBackgroundColor="@color/white"
                         android:layout_marginBottom="16dp">
-                        <Spinner
-                            android:id="@+id/spnStaffRole"
+                        <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:paddingHorizontal="16dp"
-                            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/ivRoleIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="16dp"
+                                android:src="@drawable/ic_expert_tools"
+                                app:tint="@color/black" />
+
+                            <Spinner
+                                android:id="@+id/spnStaffRole"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_toEndOf="@id/ivRoleIcon"
+                                android:paddingHorizontal="12dp"
+                                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                                android:background="@android:color/transparent" />
+                            
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="16dp"
+                                android:src="@android:drawable/arrow_down_float"
+                                app:tint="#94A3B8" />
+                        </RelativeLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- Password -->
@@ -188,32 +219,35 @@
                         app:boxBackgroundColor="@android:color/transparent"
                         app:boxStrokeWidth="0dp"
                         app:boxStrokeWidthFocused="0dp"
-                        app:hintTextColor="@color/stitch_primary"
-                        android:hint="Secure Password"
+                        app:hintEnabled="false"
                         app:passwordToggleEnabled="true"
                         app:passwordToggleTint="#94A3B8"
-                        app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
-                        app:startIconTint="#94A3B8">
+                        app:startIconDrawable="@drawable/ic_lock"
+                        app:startIconTint="@color/black">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etStaffPassword"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingVertical="16dp"
+                            android:layout_height="60dp"
+                            android:background="@drawable/bg_field_white"
+                            android:hint="Secure Password"
                             android:inputType="textPassword"
-                            android:textColor="@color/white" />
+                            android:paddingHorizontal="16dp"
+                            android:textColor="@color/black"
+                            android:textColorHint="#94A3B8" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAddStaffSubmit"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="56dp"
                         android:text="Onboard Specialist"
                         android:textAllCaps="false"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
-                        app:cornerRadius="20dp"
-                        app:backgroundTint="@color/stitch_primary"
-                        android:textColor="#0A0F14" />
+                        app:cornerRadius="16dp"
+                        app:backgroundTint="#3B82F6"
+                        android:textColor="@color/white"
+                        android:elevation="4dp" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

@@ -176,6 +176,31 @@ public class RegistrationActivity extends BaseActivity {
         }
         
         updateStepView();
+        
+        // Add TextWatchers for real-time validation
+        addTextWatchers();
+    }
+
+    private void addTextWatchers() {
+        if (etFullName != null) etFullName.addTextChangedListener(createSimpleTextWatcher(tilFullName));
+        if (etEmail != null) etEmail.addTextChangedListener(createSimpleTextWatcher(tilEmail));
+        if (actvGender != null) actvGender.addTextChangedListener(createSimpleTextWatcher(tilGender));
+        if (etMobile != null) etMobile.addTextChangedListener(createSimpleTextWatcher(tilMobile));
+        if (etAddress != null) etAddress.addTextChangedListener(createSimpleTextWatcher(tilAddress));
+        if (etCity != null) etCity.addTextChangedListener(createSimpleTextWatcher(tilCity));
+        if (etPincode != null) etPincode.addTextChangedListener(createSimpleTextWatcher(tilPincode));
+        if (etPassword != null) etPassword.addTextChangedListener(createSimpleTextWatcher(tilPassword));
+        if (etConfirmPassword != null) etConfirmPassword.addTextChangedListener(createSimpleTextWatcher(tilConfirmPassword));
+    }
+
+    private android.text.TextWatcher createSimpleTextWatcher(final TextInputLayout til) {
+        return new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (til != null) til.setError(null);
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        };
     }
 
     private void setupStepNavigation() {
@@ -262,6 +287,9 @@ public class RegistrationActivity extends BaseActivity {
         if (TextUtils.isEmpty(fullName)) {
             if (tilFullName != null) tilFullName.setError("Full name is required");
             isValid = false;
+        } else if (!fullName.contains(" ")) {
+            if (tilFullName != null) tilFullName.setError("Please enter your full name (First and Last)");
+            isValid = false;
         }
 
         if (TextUtils.isEmpty(email)) {
@@ -295,8 +323,8 @@ public class RegistrationActivity extends BaseActivity {
         if (TextUtils.isEmpty(mobile)) {
             if (tilMobile != null) tilMobile.setError("Mobile number is required");
             isValid = false;
-        } else if (mobile.length() < 10) {
-            if (tilMobile != null) tilMobile.setError("Enter a valid mobile number");
+        } else if (mobile.length() != 10) {
+            if (tilMobile != null) tilMobile.setError("Mobile number must be exactly 10 digits");
             isValid = false;
         }
 
@@ -313,8 +341,8 @@ public class RegistrationActivity extends BaseActivity {
         if (TextUtils.isEmpty(pincode)) {
             if (tilPincode != null) tilPincode.setError("Pincode is required");
             isValid = false;
-        } else if (pincode.length() < 5) {
-            if (tilPincode != null) tilPincode.setError("Enter a valid pincode");
+        } else if (pincode.length() != 6) {
+            if (tilPincode != null) tilPincode.setError("Pincode must be exactly 6 digits");
             isValid = false;
         }
 

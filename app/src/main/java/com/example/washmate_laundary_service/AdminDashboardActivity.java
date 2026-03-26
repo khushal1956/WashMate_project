@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 
 public class AdminDashboardActivity extends BaseActivity {
 
-    private View headerBackground, cardManageOrders, cardManageServices, cardManageStaff, cardReports;
+    private View headerBackground, cardManageOrders, cardManageServices, cardManageStaff, cardReports, cardManagePromos, cardManageCustomers;
     private View tvAdminGreeting, tvAdminSubtitle;
     private Button btnAdminLogout;
     private TextView tvTotalRevenue, tvTotalOrders, tvTotalCustomers, tvActiveStaff;
@@ -25,6 +25,9 @@ public class AdminDashboardActivity extends BaseActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageButton btnMenu;
+    private com.google.android.material.materialswitch.MaterialSwitch switchShopStatus;
+    private TextView tvShopStatusLabel;
+    private com.google.firebase.firestore.FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +52,15 @@ public class AdminDashboardActivity extends BaseActivity {
         tvTotalCustomers = findViewById(R.id.tvTotalCustomers);
         tvActiveStaff = findViewById(R.id.tvActiveStaff);
         
-        tvStatusPending = findViewById(R.id.tvStatusPending);
-        tvStatusInService = findViewById(R.id.tvStatusInService);
         tvStatusCompleted = findViewById(R.id.tvStatusCompleted);
         
+        cardManagePromos = findViewById(R.id.cardManagePromos);
+        cardManageCustomers = findViewById(R.id.cardManageCustomers);
+        switchShopStatus = findViewById(R.id.switchShopStatus);
+        tvShopStatusLabel = findViewById(R.id.tvShopStatusLabel);
+        
         btnAdminLogout = findViewById(R.id.btnAdminLogout);
+        db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
 
         // Apply Entrance Animations
         applyEntranceAnimations();
@@ -128,6 +135,59 @@ public class AdminDashboardActivity extends BaseActivity {
                 startActivity(intent);
             });
         }
+        
+        if (cardManagePromos != null) {
+            cardManagePromos.setOnClickListener(v -> {
+                startActivity(new Intent(AdminDashboardActivity.this, ManagePromosActivity.class));
+            });
+        }
+        
+        if (cardManageCustomers != null) {
+            cardManageCustomers.setOnClickListener(v -> {
+                startActivity(new Intent(AdminDashboardActivity.this, ManageCustomersActivity.class));
+            });
+        }
+        
+        setupShopStatusToggle();
+    }
+
+    private void setupShopStatusToggle() {
+        if (switchShopStatus == null) return;
+        
+        // Load current status
+        db.collection(com.example.washmate_laundary_service.utils.FirebaseConstants.COLLECTION_SETTINGS)
+                .document("shop_status")
+                .addSnapshotListener((value, error) -> {
+                    if (value != null && value.exists()) {
+                        boolean isOpen = value.getBoolean("isOpen") != null ? value.getBoolean("isOpen") : true;
+                        switchShopStatus.setChecked(isOpen);
+                        updateShopStatusUI(isOpen);
+                    }
+                });
+        
+        switchShopStatus.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            updateShopStatusInFirestore(isChecked);
+        });
+    }
+
+    private void updateShopStatusUI(boolean isOpen) {
+        if (tvShopStatusLabel != null) {
+            tvShopStatusLabel.setText("Store Status: " + (isOpen ? "OPEN" : "CLOSED"));
+        }
+    }
+
+    private void updateShopStatusInFirestore(boolean isOpen) {
+        java.util.Map<String, Object> status = new java.util.HashMap<>();
+        status.put("isOpen", isOpen);
+        status.put("updatedAt", new java.util.Date());
+        
+        db.collection(com.example.washmate_laundary_service.utils.FirebaseConstants.COLLECTION_SETTINGS)
+                .document("shop_status")
+                .set(status)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Shop status updated: " + (isOpen ? "Open" : "Closed"), Toast.LENGTH_SHORT).show();
+                    updateShopStatusUI(isOpen);
+                });
     }
 
     @Override

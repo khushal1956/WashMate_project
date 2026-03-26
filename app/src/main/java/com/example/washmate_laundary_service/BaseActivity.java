@@ -17,6 +17,7 @@ public class BaseActivity extends AppCompatActivity {
     protected void setupBottomNavigation(int selectedItemId) {
         BottomNavigationView bottomNavigation = findViewById(R.id.bottomNavigation);
         if (bottomNavigation != null) {
+            bottomNavigation.setItemIconTintList(null);
             bottomNavigation.setSelectedItemId(selectedItemId);
             bottomNavigation.setOnItemSelectedListener(item -> {
                 int itemId = item.getItemId();

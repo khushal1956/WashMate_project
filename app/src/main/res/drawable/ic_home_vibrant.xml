@@ -1,0 +1,18 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Roof -->
+    <path
+        android:fillColor="#259AF4"
+        android:pathData="M12,3L2,12h3v8h6v-6h2v6h6v-8h3L12,3z"/>
+    <!-- Door -->
+    <path
+        android:fillColor="#6366F1"
+        android:pathData="M11,14h2v6h-2z"/>
+    <!-- Windows -->
+    <path
+        android:fillColor="#06B6D4"
+        android:pathData="M7,14h2v2h-2z M15,14h2v2h-2z"/>
+</vector>

@@ -140,6 +140,16 @@
             android:exported="false" />
 
         <activity
+            android:name=".ManagePromosActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ManageCustomersActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".EditProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.washmate_laundary_service.models.PromoItem;
+import com.example.washmate_laundary_service.utils.FirebaseConstants;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,16 +30,24 @@ public class PromosActivity extends BaseActivity {
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        setupRecyclerView();
+        fetchPromosFromFirestore();
     }
 
-    private void setupRecyclerView() {
-        List<PromoItem> promoList = new ArrayList<>();
-        promoList.add(new PromoItem("20% OFF", "Valid on your first laundry order", "WASHFIRST"));
-        promoList.add(new PromoItem("FLAT ₹100 OFF", "On orders above ₹500", "WELCOME100"));
-        promoList.add(new PromoItem("FREE IRONING", "Get 2 items ironed free with any wash", "IRONFREE"));
-        promoList.add(new PromoItem("WEEKEND SPECIAL", "15% discount on all dry cleaning", "WEEKEND15"));
+    private void fetchPromosFromFirestore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(FirebaseConstants.COLLECTION_PROMOTIONS)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<PromoItem> promoList = queryDocumentSnapshots.toObjects(PromoItem.class);
+                    updateUI(promoList);
+                })
+                .addOnFailureListener(e -> {
+                    // Fallback to empty state on error
+                    updateUI(new ArrayList<>());
+                });
+    }
 
+    private void updateUI(List<PromoItem> promoList) {
         if (promoList.isEmpty()) {
             rvPromos.setVisibility(View.GONE);
             emptyState.setVisibility(View.VISIBLE);

@@ -259,16 +259,7 @@ public class ClothingSelectionActivity extends BaseActivity {
             holder.tvPrice.setText(String.format(Locale.getDefault(), "₹%.0f", item.getPrice()));
             holder.ivIcon.setImageResource(item.getIconResId());
             
-            // Dynamic Tinting based on Service Type
-            int themeColor = Color.parseColor("#3b82f6"); // Default Wash Blue
-            if ("dry_cleaning".equalsIgnoreCase(serviceType)) {
-                themeColor = Color.parseColor("#c084fc"); // Purple
-            } else if ("ironing".equalsIgnoreCase(serviceType)) {
-                themeColor = Color.parseColor("#eab308"); // Amber/Gold
-            } else if ("premium".equalsIgnoreCase(serviceType)) {
-                themeColor = Color.parseColor("#a855f7"); // Indigo/Purple
-            }
-            holder.ivIcon.setColorFilter(themeColor, android.graphics.PorterDuff.Mode.SRC_IN);
+            // holder.ivIcon.setColorFilter(themeColor, android.graphics.PorterDuff.Mode.SRC_IN);
             
             holder.tvQty.setText(String.valueOf(item.getQuantity()));
 

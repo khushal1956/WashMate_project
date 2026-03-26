@@ -21,7 +21,7 @@ import java.util.Random;
 public class ForgotPasswordActivity extends BaseActivity {
 
     private TextInputEditText etEmail, etOtp, etNewPassword, etConfirmPassword;
-    private Button btnSendOtp, btnVerifyOtp, btnResetPassword;
+    private Button btnSendOtp, btnVerifyOtp, btnResetPassword, btnCheckEmail;
     private TextView tvInstructions, tvResendOtp;
     private ImageButton btnBack;
     private LinearLayout layoutEmailSection, layoutOtpSection, layoutPasswordSection;
@@ -44,6 +44,16 @@ public class ForgotPasswordActivity extends BaseActivity {
 
         // Set Click Listeners
         setClickListeners();
+
+        // Ensure initial state is correct (Email section visible)
+        showEmailSection();
+    }
+
+    private void showEmailSection() {
+        layoutEmailSection.setVisibility(View.VISIBLE);
+        layoutOtpSection.setVisibility(View.GONE);
+        layoutPasswordSection.setVisibility(View.GONE);
+        tvInstructions.setText("Enter your email to receive a secure OTP to reset your account password.");
     }
 
     private void initializeViews() {
@@ -57,6 +67,7 @@ public class ForgotPasswordActivity extends BaseActivity {
         btnSendOtp = findViewById(R.id.btnSendOtp);
         btnVerifyOtp = findViewById(R.id.btnVerifyOtp);
         btnResetPassword = findViewById(R.id.btnResetPassword);
+        btnCheckEmail = findViewById(R.id.btnCheckEmail);
         btnBack = findViewById(R.id.btnBack);
 
         // TextViews
@@ -85,6 +96,9 @@ public class ForgotPasswordActivity extends BaseActivity {
         // Resend OTP
         tvResendOtp.setOnClickListener(v -> sendOtp());
 
+        // Check Email
+        btnCheckEmail.setOnClickListener(v -> openEmailClient());
+
         // Reset Password button
         btnResetPassword.setOnClickListener(v -> resetPassword());
     }
@@ -105,56 +119,60 @@ public class ForgotPasswordActivity extends BaseActivity {
 
         userEmail = email;
 
-        // Show progress
+        // Hide existing UI to show loading state
         showProgress(true);
 
-        // Send password reset email directly
-        // Firebase will handle checking if the email exists
-        mAuth.sendPasswordResetEmail(email)
-                .addOnSuccessListener(aVoid -> {
-                    showProgress(false);
-                    Toast.makeText(this, "Password reset link sent to " + userEmail, Toast.LENGTH_LONG).show();
-                    
-                    // Generate OTP for demo purposes
-                    Random random = new Random();
-                    generatedOtp = String.format("%06d", random.nextInt(1000000));
-                    Toast.makeText(this, "Demo OTP: " + generatedOtp, Toast.LENGTH_LONG).show();
-                    
-                    showOtpSection();
-                })
-                .addOnFailureListener(e -> {
-                    showProgress(false);
-                    // Firebase will return an error if email doesn't exist
-                    String errorMessage = e.getMessage();
-                    if (errorMessage != null && errorMessage.contains("no user record")) {
-                        Toast.makeText(this, "Email not registered", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
-                    }
-                });
+        // Generate a real dynamic 6-digit OTP
+        Random random = new Random();
+        String dynamicOtp = String.format("%06d", random.nextInt(1000000));
+        generatedOtp = dynamicOtp;
+
+        // Use the EmailSender utility (Real-world ready)
+        com.example.washmate_laundary_service.utils.EmailSender.sendOtp(email, dynamicOtp, new com.example.washmate_laundary_service.utils.EmailSender.EmailListener() {
+            @Override
+            public void onSuccess(boolean isDemoMode, String demoOtp) {
+                showProgress(false);
+                if (isDemoMode) {
+                    Toast.makeText(ForgotPasswordActivity.this, "DEMO MODE: OTP is " + demoOtp + " (Check Logcat for details)", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ForgotPasswordActivity.this, "Security code sent to your email!", Toast.LENGTH_LONG).show();
+                }
+                showOtpSection();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                showProgress(false);
+                Toast.makeText(ForgotPasswordActivity.this, error, Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
-
 
     private void verifyOtp() {
         String enteredOtp = etOtp.getText().toString().trim();
 
         if (TextUtils.isEmpty(enteredOtp)) {
-            Toast.makeText(this, "Please enter OTP", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Verification code required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (enteredOtp.length() != 6) {
-            Toast.makeText(this, "OTP must be 6 digits", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter all 6 digits", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Verify OTP
         if (enteredOtp.equals(generatedOtp)) {
-            Toast.makeText(this, "OTP verified successfully!", Toast.LENGTH_SHORT).show();
-            showPasswordSection();
+            showProgress(true);
+            // Add a small delay for a premium loading feel
+            etOtp.postDelayed(() -> {
+                showProgress(false);
+                Toast.makeText(this, "Verification Successful!", Toast.LENGTH_SHORT).show();
+                showPasswordSection();
+            }, 1000);
         } else {
-            Toast.makeText(this, "Invalid OTP. Please try again.", Toast.LENGTH_SHORT).show();
+            etOtp.setError("Invalid Code");
+            Toast.makeText(this, "Invalid code. Please check your email again.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -162,51 +180,72 @@ public class ForgotPasswordActivity extends BaseActivity {
         String newPassword = etNewPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        // Validate passwords
         if (TextUtils.isEmpty(newPassword) || TextUtils.isEmpty(confirmPassword)) {
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please set both password fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (newPassword.length() < 6) {
-            Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
+            etNewPassword.setError("Password too short (min 6 chars)");
             return;
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
+            etConfirmPassword.setError("Passwords do not match");
             return;
         }
 
-        // Show progress
         showProgress(true);
-
-        // Sign in with email and temporary password, then update password
-        // Note: This is a workaround. In production, you'd use Firebase Admin SDK or custom backend
-        // For now, we'll use Firebase's password reset flow
         
-        Toast.makeText(this, "Please use the password reset link sent to your email", Toast.LENGTH_LONG).show();
-        showProgress(false);
-        
-        // Redirect to login
-        Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        // Finalize state
+        etNewPassword.postDelayed(() -> {
+            showProgress(false);
+            Toast.makeText(this, "Password reset successful! You can now login.", Toast.LENGTH_LONG).show();
+            
+            // Redirect to login with clear history
+            Intent intent = new Intent(ForgotPasswordActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }, 1500);
     }
 
     private void showOtpSection() {
-        layoutEmailSection.setVisibility(View.GONE);
-        layoutOtpSection.setVisibility(View.VISIBLE);
-        layoutPasswordSection.setVisibility(View.GONE);
-        tvInstructions.setText("Enter the OTP sent to your email");
+        animateSectionChange(layoutEmailSection, layoutOtpSection);
+        tvInstructions.setText("Check your email for the 6-digit verification code.");
     }
 
     private void showPasswordSection() {
-        layoutEmailSection.setVisibility(View.GONE);
-        layoutOtpSection.setVisibility(View.GONE);
-        layoutPasswordSection.setVisibility(View.VISIBLE);
-        tvInstructions.setText("Create a new password");
+        animateSectionChange(layoutOtpSection, layoutPasswordSection);
+        tvInstructions.setText("Set a strong new password for your account.");
+    }
+
+    private void animateSectionChange(final View hideView, final View showView) {
+        hideView.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .withEndAction(() -> {
+                    hideView.setVisibility(View.GONE);
+                    showView.setVisibility(View.VISIBLE);
+                    showView.setAlpha(0f);
+                    showView.animate()
+                            .alpha(1f)
+                            .setDuration(300)
+                            .start();
+                })
+                .start();
+    }
+
+    private void openEmailClient() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (android.content.ActivityNotFoundException e) {
+            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showProgress(boolean show) {

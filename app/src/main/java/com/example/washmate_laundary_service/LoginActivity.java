@@ -150,6 +150,30 @@ public class LoginActivity extends BaseActivity {
         if (btnApple != null) {
             btnApple.setOnClickListener(v -> Toast.makeText(this, "Apple Sign-In coming soon!", Toast.LENGTH_SHORT).show());
         }
+
+        // Add TextWatchers for real-time validation
+        addTextWatchers();
+    }
+
+    private void addTextWatchers() {
+        com.google.android.material.textfield.TextInputLayout tilEmail = findViewById(R.id.tilEmail);
+        com.google.android.material.textfield.TextInputLayout tilPassword = findViewById(R.id.tilPassword);
+
+        etEmail.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tilEmail != null) tilEmail.setError(null);
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
+
+        etPassword.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (tilPassword != null) tilPassword.setError(null);
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
     private void signInWithGoogle() {

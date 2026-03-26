@@ -13,9 +13,9 @@
         android:layout_height="72dp"
         android:background="#0A0F14"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/bottom_nav_color"
+        app:itemIconSize="28dp"
         app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="unlabeled"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

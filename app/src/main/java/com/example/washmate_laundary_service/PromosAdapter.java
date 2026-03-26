@@ -20,9 +20,21 @@ import java.util.List;
 public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewHolder> {
 
     private final List<PromoItem> promos;
+    private final boolean isAdmin;
+    private OnPromoDeleteListener deleteListener;
+
+    public interface OnPromoDeleteListener {
+        void onDelete(PromoItem promo);
+    }
 
     public PromosAdapter(List<PromoItem> promos) {
+        this(promos, false, null);
+    }
+
+    public PromosAdapter(List<PromoItem> promos, boolean isAdmin, OnPromoDeleteListener listener) {
         this.promos = promos;
+        this.isAdmin = isAdmin;
+        this.deleteListener = listener;
     }
 
     @NonNull
@@ -36,7 +48,13 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
     public void onBindViewHolder(@NonNull PromoViewHolder holder, int position) {
         PromoItem promo = promos.get(position);
         holder.tvTitle.setText(promo.getTitle());
-        holder.tvDesc.setText(promo.getDescription());
+        
+        String discountInfo = "";
+        if (promo.getDiscountValue() > 0) {
+            discountInfo = " (" + (int)promo.getDiscountValue() + ("PERCENT".equalsIgnoreCase(promo.getDiscountType()) ? "%" : "₹") + " OFF)";
+        }
+        holder.tvDesc.setText(promo.getDescription() + discountInfo);
+
         holder.tvCode.setText(promo.getCode());
 
         holder.btnCopy.setOnClickListener(v -> {
@@ -45,6 +63,17 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
             clipboard.setPrimaryClip(clip);
             Toast.makeText(v.getContext(), "Code copied to clipboard", Toast.LENGTH_SHORT).show();
         });
+
+        if (isAdmin) {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+            holder.btnCopy.setVisibility(View.GONE);
+            holder.btnDelete.setOnClickListener(v -> {
+                if (deleteListener != null) deleteListener.onDelete(promo);
+            });
+        } else {
+            holder.btnDelete.setVisibility(View.GONE);
+            holder.btnCopy.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -55,6 +84,7 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
     static class PromoViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvDesc, tvCode;
         MaterialButton btnCopy;
+        android.widget.ImageButton btnDelete;
 
         public PromoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,6 +92,7 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
             tvDesc = itemView.findViewById(R.id.tvPromoDesc);
             tvCode = itemView.findViewById(R.id.tvPromoCode);
             btnCopy = itemView.findViewById(R.id.btnCopy);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }

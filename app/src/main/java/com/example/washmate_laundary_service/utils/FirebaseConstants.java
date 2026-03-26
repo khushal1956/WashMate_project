@@ -12,4 +12,8 @@ public class FirebaseConstants {
     public static final String COLLECTION_PAYMENTS = "PAYMENTS";
     public static final String COLLECTION_FEEDBACK = "FEEDBACK";
     public static final String COLLECTION_NOTIFICATIONS = "NOTIFICATIONS";
+    public static final String COLLECTION_PROMOTIONS = "PROMOTIONS";
+    public static final String COLLECTION_SETTINGS = "SETTINGS";
+    public static final String RAZORPAY_KEY_ID = "rzp_test_1DP5mmOlF5G5ag";
 }
+
