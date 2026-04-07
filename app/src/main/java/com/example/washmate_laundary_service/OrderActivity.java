@@ -437,25 +437,16 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
             findViewById(R.id.cardDatePicker).performClick(); // Trigger date picker
             return;
         }
-        
-        // Payment is always Online - validate payment method selection
+
+        // Payment Method Selection
         String paymentMode = "Online";
         int selectedMethodId = rgOnlinePaymentMethod.getCheckedRadioButtonId();
-        if (selectedMethodId == -1) {
-            Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show();
-            return;
-        }
         
-        String paymentMethod = "";
-        if (selectedMethodId == R.id.rbUPI) {
-            paymentMethod = "UPI";
-        } else if (selectedMethodId == R.id.rbCreditCard) {
-            paymentMethod = "Credit Card";
-        } else if (selectedMethodId == R.id.rbDebitCard) {
-            paymentMethod = "Debit Card";
-        } else if (selectedMethodId == R.id.rbNetBanking) {
-            paymentMethod = "Net Banking";
-        } else if (selectedMethodId == R.id.rbCashOnDelivery) {
+        String paymentMethod = "Razorpay";
+        if (selectedMethodId == R.id.rbUPI) paymentMethod = "UPI";
+        else if (selectedMethodId == R.id.rbCreditCard) paymentMethod = "Card";
+        else if (selectedMethodId == R.id.rbNetBanking) paymentMethod = "Net Banking";
+        else if (selectedMethodId == R.id.rbCashOnDelivery) {
             paymentMethod = "Cash on Delivery";
             paymentMode = "Offline";
         }
@@ -464,46 +455,67 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
         double finalTotalAmount = calculatedTotalAmount - appliedDiscount;
         if (finalTotalAmount < 0) finalTotalAmount = 0;
 
+        Log.d("OrderActivity", "Calculated=" + calculatedTotalAmount + ", Disc=" + appliedDiscount + ", Final=" + finalTotalAmount);
+
         if (paymentMode.equals("Online")) {
-            // Start Razorpay Payment
-            startPayment(finalTotalAmount);
+            if (finalTotalAmount <= 0) {
+                // Free order (100% discount)
+                placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, "Online", "Free/Promotion", "Paid", 0.0);
+            } else if (finalTotalAmount < 1.0) {
+                Toast.makeText(this, "Minimum order amount for online payment is ₹1.00", Toast.LENGTH_LONG).show();
+            } else {
+                startPayment(finalTotalAmount, paymentMethod);
+            }
         } else {
-             // For COD or other methods (if any in future)
-             placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, paymentMode, paymentMethod, "Pending", finalTotalAmount);
+            // Cash on Delivery
+            placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, "Offline", "Cash on Delivery", "Pending", finalTotalAmount);
         }
     }
 
 
-    private void startPayment(double amount) {
+    private void startPayment(double amount, String method) {
         final Activity activity = this;
         final Checkout co = new Checkout();
         co.setKeyID(com.example.washmate_laundary_service.utils.FirebaseConstants.RAZORPAY_KEY_ID); 
 
         try {
+            long finalAmount = Math.round(amount * 100);
             JSONObject options = new JSONObject();
             options.put("name", "WashMate Laundry");
-            options.put("description", "Laundry Service Charges");
+            options.put("description", "Premium Cleaning Services");
             options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png");
             options.put("theme.color", "#48CAE4");
             options.put("currency", "INR");
-            
-            // Amount in paise (multiply by 100)
-            options.put("amount", (int)(amount * 100)); // Must be an Integer, not String!
+            options.put("amount", finalAmount);
             
             JSONObject prefill = new JSONObject();
-            if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().getEmail() != null) {
-                prefill.put("email", mAuth.getCurrentUser().getEmail());
-            } else {
-                prefill.put("email", "customer@washmate.com"); // fallback if email is null
+            if (mAuth.getCurrentUser() != null) {
+                 String email = mAuth.getCurrentUser().getEmail();
+                 if (email != null) prefill.put("email", email);
             }
-            prefill.put("contact", mAuth.getCurrentUser().getPhoneNumber() != null ? mAuth.getCurrentUser().getPhoneNumber() : "9999999999");
+            
+            // CRITICAL FIX: Razorpay requires a valid 10-digit 'contact' number in the prefill options
+            // to display UPI and Net Banking natively. If this is missing, and the account only has UPI enabled, 
+            // it throws "No appropriate payment method found".
+            prefill.put("contact", "9999999999");
+            
+            // NOTE: We do NOT force prefill.put("method", "upi") here! 
+            // Forcing a method that is not perfectly enabled on the Razorpay Dashboard (Test Mode) 
+            // will throw "No appropriate payment method found".
             options.put("prefill", prefill);
 
+            // Add retry logic
+            JSONObject retryObj = new JSONObject();
+            retryObj.put("enabled", true);
+            retryObj.put("max_count", 4);
+            options.put("retry", retryObj);
+
+            Log.d("RazorpayOptions", options.toString());
             co.open(activity, options);
             
         } catch (Exception e) {
-            Toast.makeText(activity, "Error in payment: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            Log.e("OrderActivity", "Error in startPayment", e);
+            Toast.makeText(activity, "Payment Gateway Error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -573,24 +585,18 @@ public class OrderActivity extends BaseActivity implements PaymentResultListener
             }
         }
 
-        String paymentMode = "Online";
-        
-        int selectedMethodId = rgOnlinePaymentMethod.getCheckedRadioButtonId();
-        String paymentMethod = "Online";
-        if (selectedMethodId == R.id.rbUPI) paymentMethod = "UPI";
-        else if (selectedMethodId == R.id.rbCreditCard) paymentMethod = "Credit Card";
-        else if (selectedMethodId == R.id.rbDebitCard) paymentMethod = "Debit Card";
-        else if (selectedMethodId == R.id.rbNetBanking) paymentMethod = "Net Banking";
-        else if (selectedMethodId == R.id.rbCashOnDelivery) { 
-            paymentMethod = "Cash on Delivery"; 
-            paymentMode = "Offline"; 
-        }
-        
         // Place order in Firestore
         double finalTotalAmount = calculatedTotalAmount - appliedDiscount;
         if (finalTotalAmount < 0) finalTotalAmount = 0;
         
-        placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, paymentMode, paymentMethod, "Paid", finalTotalAmount);
+        // Final payment method from RadioGroup
+        int selectedMethodId = rgOnlinePaymentMethod.getCheckedRadioButtonId();
+        String paymentMethod = "Razorpay";
+        if (selectedMethodId == R.id.rbUPI) paymentMethod = "UPI";
+        else if (selectedMethodId == R.id.rbCreditCard) paymentMethod = "Card";
+        else if (selectedMethodId == R.id.rbNetBanking) paymentMethod = "Net Banking";
+
+        placeOrder(finalItemDescription, totalQuantity, address, city, pincode, selectedDate, "Online", paymentMethod, "Paid", finalTotalAmount);
     }
 
 

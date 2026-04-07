@@ -190,6 +190,17 @@
                 android:textSize="12sp"
                 android:textColor="#94A3B8"
                 android:layout_marginTop="4dp"/>
+                
+             <TextView
+                android:id="@+id/tvStaffNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Staff Note: -"
+                android:textSize="13sp"
+                android:textColor="#34D399"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <!-- Actions -->
@@ -248,6 +259,21 @@
                 app:cornerRadius="16dp"
                 app:backgroundTint="@color/stitch_primary"
                 android:textColor="#0A0F14" />
+                
+             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMessageStaff"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:text="Message Staff"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp"
+                app:backgroundTint="#1A94A3B8"
+                app:strokeWidth="1dp"
+                app:strokeColor="#4094A3B8"
+                android:textColor="#94A3B8" />
         </LinearLayout>
 
     </LinearLayout>

@@ -16,6 +16,14 @@ public class SupportActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_support);
 
+        String orderId = getIntent().getStringExtra("ORDER_ID");
+        if (orderId != null) {
+            TextView tvHeader = findViewById(R.id.tvSupportHeader); // I'll check if this ID exists or use Generic
+            if (tvHeader != null) {
+                tvHeader.setText("Support for Order #" + orderId);
+            }
+        }
+
         setupContacts();
         setupNavigation();
     }

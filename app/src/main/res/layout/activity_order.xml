@@ -420,85 +420,81 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <RadioGroup
+                android:id="@+id/rgOnlinePaymentMethod"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#1E293B"
-                app:cardBackgroundColor="#0F172A"
+                android:orientation="vertical"
                 android:layout_marginBottom="24dp">
 
-                <!-- Using styled RadioButtons with more padding and sizing to look like list items -->
-                <RadioGroup
-                    android:id="@+id/rgOnlinePaymentMethod"
+                <!-- UPI Option -->
+                <RadioButton
+                    android:id="@+id/rbUPI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/bg_selectable_payment_card"
+                    android:button="@null"
+                    android:checked="true"
+                    android:padding="16dp"
+                    android:drawableStart="@drawable/ic_payment"
+                    android:drawablePadding="16dp"
+                    android:drawableTint="@color/stitch_primary"
+                    android:text="UPI Payment"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/rbUPI"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="   UPI / QR Pay"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        android:buttonTint="@color/stitch_primary"
-                        android:background="?attr/selectableItemBackground" />
+                <!-- Card Option -->
+                <RadioButton
+                    android:id="@+id/rbCreditCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/bg_selectable_payment_card"
+                    android:button="@null"
+                    android:padding="16dp"
+                    android:drawableStart="@drawable/ic_payment"
+                    android:drawablePadding="16dp"
+                    android:drawableTint="#10B981"
+                    android:text="Credit/Debit Card"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/rbCreditCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="   Credit Card"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        android:buttonTint="@color/stitch_primary"
-                        android:background="?attr/selectableItemBackground" />
-                        
-                    <RadioButton
-                        android:id="@+id/rbDebitCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="   Debit Card"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        android:buttonTint="@color/stitch_primary"
-                        android:background="?attr/selectableItemBackground" />
+                <!-- Net Banking Option -->
+                <RadioButton
+                    android:id="@+id/rbNetBanking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_selectable_payment_card"
+                    android:button="@null"
+                    android:padding="16dp"
+                    android:drawableStart="@drawable/ic_payment"
+                    android:drawablePadding="16dp"
+                    android:drawableTint="#F59E0B"
+                    android:text="Net Banking"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                    <RadioButton
-                        android:id="@+id/rbNetBanking"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="   Net Banking"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        android:buttonTint="@color/stitch_primary"
-                        android:background="?attr/selectableItemBackground" />
-
-                    <RadioButton
-                        android:id="@+id/rbCashOnDelivery"
-                        android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:text="   Cash on Delivery"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:paddingStart="20dp"
-                        android:paddingEnd="20dp"
-                        android:buttonTint="@color/stitch_primary"
-                        android:background="?attr/selectableItemBackground" />
-                </RadioGroup>
-            </com.google.android.material.card.MaterialCardView>
+                <!-- Cash on Delivery (Optional, keeping as per common practice unless strictly asked) -->
+                <RadioButton
+                    android:id="@+id/rbCashOnDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_selectable_payment_card"
+                    android:button="@null"
+                    android:padding="16dp"
+                    android:drawableStart="@drawable/ic_payment"
+                    android:drawablePadding="16dp"
+                    android:drawableTint="#94A3B8"
+                    android:text="Cash on Delivery"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </RadioGroup>
 
             <!-- Invisible helper views for Java logic -->
             <TextView android:id="@+id/tvCustomerName" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" />

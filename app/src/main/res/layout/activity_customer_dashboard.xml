@@ -15,7 +15,7 @@
         android:background="@color/stitch_bg_dark"
         android:fitsSystemWindows="true">
 
-        <!-- Compact Header (Adjusted for visibility) -->
+        <!-- Compact Header -->
         <RelativeLayout
             android:id="@+id/headerLayout"
             android:layout_width="match_parent"
@@ -32,21 +32,34 @@
                 android:background="@drawable/bg_glass_card"
                 android:src="@drawable/ic_menu"
                 app:tint="@color/white"
-                android:padding="12dp"
-                android:clickable="true"
-                android:focusable="true" />
+                android:padding="12dp" />
 
-            <TextView
-                android:id="@+id/tvAppLogo"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="WashMate"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.05"
-                android:fontFamily="sans-serif-medium" />
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvAppLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WashMate"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.05" />
+
+                <TextView
+                    android:id="@+id/tvGreeting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hello, Customer"
+                    android:textColor="@color/stitch_primary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivUserProfile"
@@ -98,6 +111,27 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- NEW POSITION: Special Offer (Prominent Placement) -->
+                <LinearLayout
+                    android:id="@+id/layoutSpecialOfferHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="24dp"
+                        android:text="🎁 Special Offer"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <include layout="@layout/layout_featured_offer" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -381,57 +415,11 @@
                         android:paddingHorizontal="16dp"
                         android:clipToPadding="false"
                         android:orientation="horizontal"
+                        android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/item_track_order_compact" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="24dp"
-                    android:layout_marginTop="24dp"
-                    android:gravity="bottom">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvGreeting"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Hello Khushal"
-                            android:textColor="@color/stitch_text_dim"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-
-
-
-
-                <LinearLayout
-                    android:id="@+id/layoutSpecialOfferHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="24dp"
-                        android:layout_marginTop="24dp"
-                        android:text="🎁 Special Offer"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <include layout="@layout/layout_featured_offer" />
-                </LinearLayout>
 
 
 

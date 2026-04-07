@@ -23,6 +23,9 @@ public class Order {
     private long timestamp;
     private String assignedStaffId;
     private String assignedStaffName;
+    private String completionDate;
+    private String staffNotes;
+    private String adminNotes;
 
     public Order() {
         // Default constructor required for Firebase
@@ -123,5 +126,14 @@ public class Order {
 
     public String getAssignedStaffName() { return assignedStaffName; }
     public void setAssignedStaffName(String assignedStaffName) { this.assignedStaffName = assignedStaffName; }
+
+    public String getCompletionDate() { return completionDate; }
+    public void setCompletionDate(String completionDate) { this.completionDate = completionDate; }
+
+    public String getStaffNotes() { return staffNotes; }
+    public void setStaffNotes(String staffNotes) { this.staffNotes = staffNotes; }
+
+    public String getAdminNotes() { return adminNotes; }
+    public void setAdminNotes(String adminNotes) { this.adminNotes = adminNotes; }
 }
 

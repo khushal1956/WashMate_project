@@ -125,12 +125,52 @@ public class StaffDashboardActivity extends BaseActivity {
         adapter.setOnStatusChangeListener((order, newStatus) -> {
             updateOrderStatus(order, newStatus);
         });
+
+        adapter.setOnOrderMessageListener(order -> {
+             showMessageAdminDialog(order);
+        });
+    }
+
+    private void showMessageAdminDialog(Order order) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Report / Message Admin");
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setHint("Type your message here...");
+        
+        if(order.getStaffNotes() != null) input.setText(order.getStaffNotes());
+        
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        input.setPadding(padding, padding, padding, padding);
+        builder.setView(input);
+        
+        builder.setPositiveButton("Send Uplink", (dialog, which) -> {
+            String message = input.getText().toString().trim();
+            if(!message.isEmpty()) {
+                mFirestore.collection("ORDERS").document(order.getOrderId())
+                    .update("staffNotes", message)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(StaffDashboardActivity.this, "Message sent to Admin", Toast.LENGTH_SHORT).show();
+                        fetchAssignedOrders();
+                    });
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private void updateOrderStatus(Order order, String newStatus) {
         progressBar.setVisibility(View.VISIBLE);
+        
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("status", newStatus);
+        
+        // Exact time-capture routine for fulfilled tasks
+        if ("Completed".equalsIgnoreCase(newStatus) || "Delivered".equalsIgnoreCase(newStatus)) {
+             updates.put("completionDate", new java.util.Date().toString());
+        }
+
         mFirestore.collection("ORDERS").document(order.getOrderId())
-                .update("status", newStatus)
+                .update(updates)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Order marked as " + newStatus, Toast.LENGTH_SHORT).show();
                     fetchAssignedOrders(); // Refresh list to update UI

@@ -155,6 +155,15 @@ public class CustomerDashboardActivity extends BaseActivity {
                             com.example.washmate_laundary_service.models.Order order = doc.toObject(com.example.washmate_laundary_service.models.Order.class);
                             if (order != null) {
                                 String status = order.getStatus();
+                                
+                                // NEW: Automated Rejection Logic
+                                if ("Pending".equalsIgnoreCase(status) && isDateOverdue(order.getPickupDate())) {
+                                    mFirestore.collection("ORDERS").document(doc.getId())
+                                            .update("status", "Rejected");
+                                    // The update will trigger this snippet again, so we just wait for the next snapshot
+                                    continue;
+                                }
+
                                 if (status != null && !status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("Cancelled") && !status.equalsIgnoreCase("Delivered")) {
                                     activeOrdersList.add(order);
                                 }
@@ -169,6 +178,25 @@ public class CustomerDashboardActivity extends BaseActivity {
                         }
                     }
                 });
+    }
+
+    private boolean isDateOverdue(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) return false;
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd MMM yyyy", java.util.Locale.getDefault());
+            java.util.Date pickupDate = sdf.parse(dateStr);
+            if (pickupDate == null) return false;
+
+            java.util.Calendar today = java.util.Calendar.getInstance();
+            today.set(java.util.Calendar.HOUR_OF_DAY, 0);
+            today.set(java.util.Calendar.MINUTE, 0);
+            today.set(java.util.Calendar.SECOND, 0);
+            today.set(java.util.Calendar.MILLISECOND, 0);
+
+            return pickupDate.before(today.getTime());
+        } catch (java.text.ParseException e) {
+            return false;
+        }
     }
     
 
@@ -190,10 +218,16 @@ public class CustomerDashboardActivity extends BaseActivity {
 
     private void setupHowItWorksSlider() {
         howItWorksList = new ArrayList<>();
-        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_1, "Book a Service", "Choose from our range of premium laundry and dry cleaning services."));
+        
+        // 1. HD Hero Slide (FIRST)
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.hd_laundry_hero, "Premium Care", "Experience the finest laundry service with WashMate's expert touch."));
+        
+        // 2. Process Slides
         howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_2, "Free Pickup", "Our delivery partner will arrive at your doorstep to collect your laundry."));
-        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_3, "Expert Care", "Your clothes are processed using state-of-the-art machines and premium detergents."));
-        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_4, "Fast Delivery", "Fresh, clean, and neatly folded clothes delivered back to you within 24-48 hours."));
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_4, "Fast Delivery", "Fresh, clean, and neatly folded clothes delivered back to you within 24 hours."));
+
+        // 3. Video Slide (LAST)
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem("https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", "Watch Our Process", "See how WashMate handles your clothes with modern technology."));
 
         HowItWorksAdapter adapter = new HowItWorksAdapter(howItWorksList);
         vpHowItWorks.setAdapter(adapter);
@@ -278,13 +312,37 @@ public class CustomerDashboardActivity extends BaseActivity {
                         if (documentSnapshot.exists()) {
                             String name = documentSnapshot.getString("fullName");
                             if (name != null) {
-                                if (tvGreeting != null) tvGreeting.setText(getString(R.string.greeting_format, name.split(" ")[0]));
+                                if (tvGreeting != null) {
+                                    String firstName = name.split(" ")[0];
+                                    tvGreeting.setText("Hello, " + firstName);
+                                }
                                 if (tvHeaderName != null) tvHeaderName.setText(name);
                             }
                         }
                     });
+
+            // Check if it's the customer's first order
+            mFirestore.collection("ORDERS")
+                    .whereEqualTo("customerId", userId)
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Already has orders, hide special offer
+                            if (layoutSpecialOfferHeader != null) {
+                                layoutSpecialOfferHeader.setVisibility(View.GONE);
+                                // Prevent fetchPromos from showing it again
+                                isFirstOrder = false;
+                            }
+                        } else {
+                            // First order! Show special offer
+                            isFirstOrder = true;
+                        }
+                    });
         }
     }
+
+    private boolean isFirstOrder = true;
     
     private void setupServiceCards() {
         View cardWashing = findViewById(R.id.cardWashing);
@@ -337,7 +395,7 @@ public class CustomerDashboardActivity extends BaseActivity {
                                 });
                             }
 
-                            if (layoutSpecialOfferHeader != null && layoutSpecialOfferHeader.getVisibility() != View.VISIBLE) {
+                            if (layoutSpecialOfferHeader != null && layoutSpecialOfferHeader.getVisibility() != View.VISIBLE && isFirstOrder) {
                                 layoutSpecialOfferHeader.setAlpha(0f);
                                 layoutSpecialOfferHeader.setVisibility(View.VISIBLE);
                                 layoutSpecialOfferHeader.animate().alpha(1f).setDuration(500).start();

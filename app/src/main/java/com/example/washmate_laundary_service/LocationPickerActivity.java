@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +36,9 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
     private TextView tvCurrentAddress;
+    private EditText etSearchLocation;
+    private ImageView btnSearch;
+    private View btnMyLocation;
     private Button btnConfirm;
     private String fullAddress = "";
     private String selectedCity = "";
@@ -47,6 +53,9 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
 
         tvCurrentAddress = findViewById(R.id.tvCurrentAddress);
         btnConfirm = findViewById(R.id.btnConfirmLocation);
+        etSearchLocation = findViewById(R.id.etSearchLocation);
+        btnSearch = findViewById(R.id.btnSearch);
+        btnMyLocation = findViewById(R.id.btnMyLocation);
         View btnBack = findViewById(R.id.btnBack);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -58,6 +67,21 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
         }
 
         btnBack.setOnClickListener(v -> finish());
+        
+        btnSearch.setOnClickListener(v -> performSearch());
+        
+        etSearchLocation.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch();
+                return true;
+            }
+            return false;
+        });
+
+        btnMyLocation.setOnClickListener(v -> {
+            enableMyLocation();
+        });
+
         btnConfirm.setOnClickListener(v -> {
             Intent resultIntent = new Intent();
             resultIntent.putExtra("address", fullAddress);
@@ -67,6 +91,35 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
             finish();
         });
     }
+
+    private void performSearch() {
+        String query = etSearchLocation.getText().toString().trim();
+        if (query.isEmpty()) {
+            Toast.makeText(this, "Enter a location to search", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Hide keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null && getCurrentFocus() != null) {
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocationName(query, 1);
+            if (addresses != null && !addresses.isEmpty()) {
+                Address address = addresses.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f));
+            } else {
+                Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "Search failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -95,17 +148,17 @@ public class LocationPickerActivity extends FragmentActivity implements OnMapRea
             fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
                 if (location != null) {
                     LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f));
-                    reverseGeocode(location.getLatitude(), location.getLongitude());
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f));
                 } else {
                     // Fallback to default if last location is null
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15f));
-                    reverseGeocode(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15f));
+                    Toast.makeText(this, "Could not fetch perfect live location. Ensure GPS is on.", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(e -> {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15f));
-                reverseGeocode(DEFAULT_LOCATION.latitude, DEFAULT_LOCATION.longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LOCATION, 15f));
             });
+        } else {
+             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 

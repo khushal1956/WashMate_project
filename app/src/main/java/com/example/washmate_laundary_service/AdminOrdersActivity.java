@@ -83,6 +83,18 @@ public class AdminOrdersActivity extends BaseActivity implements AdminOrdersAdap
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerStatusFilter.setAdapter(spinnerAdapter);
+
+        // Pre-configure from Intent Extra if exists
+        String intentStatus = getIntent().getStringExtra("FILTER_STATUS");
+        if (intentStatus != null) {
+            currentStatusFilter = intentStatus;
+            for (int i = 0; i < statuses.length; i++) {
+                if (statuses[i].equals(intentStatus)) {
+                    spinnerStatusFilter.setSelection(i);
+                    break;
+                }
+            }
+        }
         
         spinnerStatusFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -200,6 +212,38 @@ public class AdminOrdersActivity extends BaseActivity implements AdminOrdersAdap
     @Override
     public void onAssignOrder(Order order, int position) {
         showAssignStaffDialog(order, position);
+    }
+
+    @Override
+    public void onMessageStaff(Order order, int position) {
+        showAdminMessageDialog(order, position);
+    }
+    
+    private void showAdminMessageDialog(Order order, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Reply to Staff");
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setHint("Type directive here...");
+        
+        if (order.getAdminNotes() != null) input.setText(order.getAdminNotes());
+        
+        int padding = (int) (20 * getResources().getDisplayMetrics().density);
+        input.setPadding(padding, padding, padding, padding);
+        builder.setView(input);
+        
+        builder.setPositiveButton("Send Reply", (dialog, which) -> {
+            String message = input.getText().toString().trim();
+            if (!message.isEmpty()) {
+                mFirestore.collection("ORDERS").document(order.getOrderId())
+                    .update("adminNotes", message)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Directive Sent", Toast.LENGTH_SHORT).show();
+                        fetchOrders();
+                    });
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private void showAssignStaffDialog(Order order, int position) {

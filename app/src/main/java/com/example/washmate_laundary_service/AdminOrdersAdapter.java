@@ -24,6 +24,7 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
         void onAcceptOrder(Order order, int position);
         void onRejectOrder(Order order, int position);
         void onAssignOrder(Order order, int position);
+        void onMessageStaff(Order order, int position);
     }
 
 
@@ -65,8 +66,8 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
     class OrderViewHolder extends RecyclerView.ViewHolder {
         private TextView tvCustomerName, tvOrderId, tvStatus, tvServiceName, tvServiceType,
                 tvItemDescription, tvQuantity, tvPickupAddress, tvPickupDate,
-                tvPaymentMode, tvTotalAmount;
-        private MaterialButton btnAccept, btnReject, btnAssign;
+                tvPaymentMode, tvTotalAmount, tvStaffNotes;
+        private MaterialButton btnAccept, btnReject, btnAssign, btnMessageStaff;
         private LinearLayout llActionButtons, llAssignButton;
 
 
@@ -83,11 +84,13 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
             tvPickupDate = itemView.findViewById(R.id.tvPickupDate);
             tvPaymentMode = itemView.findViewById(R.id.tvPaymentMode);
             tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
+            tvStaffNotes = itemView.findViewById(R.id.tvStaffNotes);
             btnAccept = itemView.findViewById(R.id.btnAccept);
             btnReject = itemView.findViewById(R.id.btnReject);
             llActionButtons = itemView.findViewById(R.id.llActionButtons);
             
             btnAssign = itemView.findViewById(R.id.btnAssign);
+            btnMessageStaff = itemView.findViewById(R.id.btnMessageStaff);
             llAssignButton = itemView.findViewById(R.id.llAssignButton);
         }
 
@@ -156,14 +159,33 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
                  tvStatus.setBackgroundColor(statusColor);
             }
             
-            // Handle Assign Button Visibility
-            // Handle Assign Button Visibility
+            // Handle Assign & Message Button Visibility
             if ("Accepted".equalsIgnoreCase(order.getStatus()) || 
+                "Processing".equalsIgnoreCase(order.getStatus()) ||
                 "Completed".equalsIgnoreCase(order.getStatus()) || 
                 "Picked Up".equalsIgnoreCase(order.getStatus())) {
                 if (llAssignButton != null) llAssignButton.setVisibility(View.VISIBLE);
             } else {
                 if (llAssignButton != null) llAssignButton.setVisibility(View.GONE);
+            }
+            
+            // Staff Notes Display
+            if (order.getStaffNotes() != null && !order.getStaffNotes().trim().isEmpty()) {
+                if(tvStaffNotes != null) {
+                    tvStaffNotes.setVisibility(View.VISIBLE);
+                    tvStaffNotes.setText("Staff Report: " + order.getStaffNotes());
+                }
+            } else {
+                if(tvStaffNotes != null) tvStaffNotes.setVisibility(View.GONE);
+            }
+            
+            // Highlight Message Staff if sent
+            if(order.getAdminNotes() != null && !order.getAdminNotes().trim().isEmpty() && btnMessageStaff != null) {
+                btnMessageStaff.setText("Admin Reply Sent");
+                btnMessageStaff.setTextColor(0xFF34D399); // Green tint
+            } else if (btnMessageStaff != null) {
+                btnMessageStaff.setText("Message Staff");
+                btnMessageStaff.setTextColor(0xFF94A3B8); // Default
             }
 
 
@@ -185,6 +207,14 @@ public class AdminOrdersAdapter extends RecyclerView.Adapter<AdminOrdersAdapter.
                 btnAssign.setOnClickListener(v -> {
                     if (listener != null) {
                         listener.onAssignOrder(order, position);
+                    }
+                });
+            }
+            
+            if (btnMessageStaff != null) {
+                btnMessageStaff.setOnClickListener(v -> {
+                    if (listener != null) {
+                        listener.onMessageStaff(order, position);
                     }
                 });
             }

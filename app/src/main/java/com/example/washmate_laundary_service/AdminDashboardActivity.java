@@ -27,6 +27,9 @@ public class AdminDashboardActivity extends BaseActivity {
     private com.google.android.material.materialswitch.MaterialSwitch switchShopStatus;
     private TextView tvShopStatusLabel;
     private com.google.firebase.firestore.FirebaseFirestore db;
+    
+    private com.google.firebase.firestore.ListenerRegistration orderListenerRegistration;
+    private boolean isInitialOrdersLoad = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +162,7 @@ public class AdminDashboardActivity extends BaseActivity {
         }
         
         setupShopStatusToggle();
+        listenForNewOrders();
     }
 
     private void setupShopStatusToggle() {
@@ -198,6 +202,41 @@ public class AdminDashboardActivity extends BaseActivity {
                     Toast.makeText(this, "Shop status updated: " + (isOpen ? "Open" : "Closed"), Toast.LENGTH_SHORT).show();
                     updateShopStatusUI(isOpen);
                 });
+    }
+
+    private void listenForNewOrders() {
+        orderListenerRegistration = db.collection("ORDERS")
+                .whereEqualTo("status", "Pending")
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null || snapshots == null) return;
+
+                    if (isInitialOrdersLoad) {
+                        isInitialOrdersLoad = false;
+                        return; // Skip notifications on app load
+                    }
+
+                    for (com.google.firebase.firestore.DocumentChange dc : snapshots.getDocumentChanges()) {
+                        if (dc.getType() == com.google.firebase.firestore.DocumentChange.Type.ADDED) {
+                            com.example.washmate_laundary_service.models.Order newOrder = dc.getDocument().toObject(com.example.washmate_laundary_service.models.Order.class);
+                            showNewOrderAlert(newOrder);
+                        }
+                    }
+                });
+    }
+
+    private void showNewOrderAlert(com.example.washmate_laundary_service.models.Order order) {
+        if (isFinishing() || isDestroyed()) return;
+
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("🚨 New Order Received!")
+                .setMessage("A fresh order (#" + order.getOrderId().substring(0, Math.min(8, order.getOrderId().length())) + ") has been securely placed by " + order.getCustomerName() + ".\n\nEstimated Value: ₹" + String.format("%.0f", order.getTotalAmount()))
+                .setPositiveButton("View Details", (dialog, which) -> {
+                    Intent intent = new Intent(this, AdminOrdersActivity.class);
+                    intent.putExtra("FILTER_STATUS", "Pending");
+                    startActivity(intent);
+                })
+                .setNegativeButton("Dismiss", null)
+                .show();
     }
 
     @Override
@@ -321,5 +360,13 @@ public class AdminDashboardActivity extends BaseActivity {
         if (cardManageServices != null && slideUp != null) cardManageServices.startAnimation(slideUp);
         if (cardManageStaff != null && slideUp != null) cardManageStaff.startAnimation(slideUp);
         if (cardReports != null && slideUp != null) cardReports.startAnimation(slideUp);
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (orderListenerRegistration != null) {
+            orderListenerRegistration.remove();
+        }
     }
 }
