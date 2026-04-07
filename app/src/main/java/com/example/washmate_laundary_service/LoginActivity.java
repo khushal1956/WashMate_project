@@ -326,10 +326,24 @@ public class LoginActivity extends BaseActivity {
         // 3. Check if Customer
         db.collection(FirebaseConstants.COLLECTION_CUSTOMERS).document(uid).get()
                 .addOnSuccessListener(customerSnap -> {
-                    fallback.run();
                     if (!customerSnap.exists()) {
                         Toast.makeText(LoginActivity.this, "Profile data missing, using defaults.", Toast.LENGTH_SHORT).show();
                     }
+                    
+                    // Enforce Store Status Check for Customers
+                    db.collection("SETTINGS").document("shop_status").get()
+                            .addOnSuccessListener(statusSnap -> {
+                                if (statusSnap.exists() && statusSnap.getBoolean("isOpen") != null && !statusSnap.getBoolean("isOpen")) {
+                                    Toast.makeText(LoginActivity.this, "The store is currently closed. Please try logging in later.", Toast.LENGTH_LONG).show();
+                                    FirebaseAuth.getInstance().signOut();
+                                    if (buttonLogin != null) buttonLogin.setEnabled(true);
+                                } else {
+                                    fallback.run();
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                fallback.run(); // Proceed on internet failure
+                            });
                 })
                 .addOnFailureListener(e -> {
                     // Final fallback

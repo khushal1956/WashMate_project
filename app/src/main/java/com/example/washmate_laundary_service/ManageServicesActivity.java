@@ -24,7 +24,7 @@ public class ManageServicesActivity extends BaseActivity {
     private FirebaseFirestore mFirestore;
     private LinearLayout llEmptyState;
     private ImageButton btnBack;
-    private FloatingActionButton fabAddService;
+    private View fabAddService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

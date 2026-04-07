@@ -53,6 +53,16 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tvPromoConstraints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Min: $0 | Exp: N/A"
+                android:textColor="#EF4444"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tvPromoCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

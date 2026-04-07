@@ -56,12 +56,13 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_wm_premium"
-            android:scaleType="fitCenter" />
+        <ImageButton
+            android:id="@+id/fabAddStaff"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_glass_card"
+            android:src="@android:drawable/ic_input_add"
+            app:tint="#CBD5E1" />
     </LinearLayout>
 
     <!-- Staff List -->
@@ -113,17 +114,5 @@
             android:textSize="14sp"
             android:textAlignment="center" />
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddStaff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/stitch_primary"
-        app:tint="#0A0F14"
-        app:elevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

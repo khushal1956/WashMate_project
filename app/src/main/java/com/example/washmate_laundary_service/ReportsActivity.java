@@ -1,5 +1,6 @@
 package com.example.washmate_laundary_service;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -10,8 +11,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class ReportsActivity extends BaseActivity {
 
-    private TextView tvReportRevenue, tvReportCompleted, tvReportProcessing, tvReportCancelled, tvReportTotalOrders;
+    private TextView tvReportRevenue, tvReportCompleted, tvReportProcessing, tvReportCancelled, tvReportTotalOrders, tvReportAvgOrder;
     private FirebaseFirestore mFirestore;
+
+    private double finalTotalRevenue = 0;
+    private int finalTotalCompleted = 0;
+    private int finalTotalOrders = 0;
+    private double finalAvgOrder = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +31,46 @@ public class ReportsActivity extends BaseActivity {
             btnBack.setOnClickListener(v -> finish());
         }
 
+        ImageButton btnExportReport = findViewById(R.id.btnExportReport);
+        if (btnExportReport != null) {
+            btnExportReport.setOnClickListener(v -> exportReport());
+        }
+
         tvReportRevenue = findViewById(R.id.tvReportRevenue);
         tvReportCompleted = findViewById(R.id.tvReportCompleted);
         tvReportProcessing = findViewById(R.id.tvReportProcessing);
         tvReportCancelled = findViewById(R.id.tvReportCancelled);
         tvReportTotalOrders = findViewById(R.id.tvReportTotalOrders);
+        tvReportAvgOrder = findViewById(R.id.tvReportAvgOrder);
 
         fetchReportData();
+    }
+
+    private void exportReport() {
+        if (finalTotalOrders == 0) {
+            Toast.makeText(this, "No data available to export yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String currentDateTime = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault()).format(new java.util.Date());
+
+        String reportText = "🌊 WashMate - Premium Laundry Service\n" +
+                "📅 Date: " + currentDateTime + "\n" +
+                "============================\n" +
+                "💰 Total Lifetime Revenue: ₹" + String.format("%.0f", finalTotalRevenue) + "\n" +
+                "📈 Average Order Value: ₹" + String.format("%.0f", finalAvgOrder) + "\n" +
+                "📦 Total Output (Orders): " + finalTotalOrders + "\n" +
+                "✅ Completed Orders: " + finalTotalCompleted + "\n" +
+                "============================\n" +
+                "Generated securely via WashMate Admin Engine";
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, reportText);
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, "Export Report");
+        startActivity(shareIntent);
     }
 
     private void fetchReportData() {
@@ -77,11 +116,19 @@ public class ReportsActivity extends BaseActivity {
                         }
                     }
 
+                    double avgOrderValue = totalCompleted > 0 ? totalRevenue / totalCompleted : 0;
+
                     tvReportRevenue.setText(String.format("₹%.0f", totalRevenue));
+                    tvReportAvgOrder.setText(String.format("₹%.0f", avgOrderValue));
                     tvReportCompleted.setText(String.valueOf(totalCompleted));
                     tvReportProcessing.setText(String.valueOf(totalProcessing));
                     tvReportCancelled.setText(String.valueOf(totalCancelled));
                     tvReportTotalOrders.setText(String.valueOf(totalOrders));
+
+                    finalTotalRevenue = totalRevenue;
+                    finalAvgOrder = avgOrderValue;
+                    finalTotalCompleted = totalCompleted;
+                    finalTotalOrders = totalOrders;
 
                     if (totalOrders == 0) {
                          android.util.Log.w("Reports", "No orders found in database");

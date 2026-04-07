@@ -21,7 +21,6 @@ public class AdminDashboardActivity extends BaseActivity {
     private View tvAdminGreeting, tvAdminSubtitle;
     private Button btnAdminLogout;
     private TextView tvTotalRevenue, tvTotalOrders, tvTotalCustomers, tvActiveStaff;
-    private TextView tvStatusPending, tvStatusInService, tvStatusCompleted;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageButton btnMenu;
@@ -52,8 +51,6 @@ public class AdminDashboardActivity extends BaseActivity {
         tvTotalCustomers = findViewById(R.id.tvTotalCustomers);
         tvActiveStaff = findViewById(R.id.tvActiveStaff);
         
-        tvStatusCompleted = findViewById(R.id.tvStatusCompleted);
-        
         cardManagePromos = findViewById(R.id.cardManagePromos);
         cardManageCustomers = findViewById(R.id.cardManageCustomers);
         switchShopStatus = findViewById(R.id.switchShopStatus);
@@ -62,6 +59,19 @@ public class AdminDashboardActivity extends BaseActivity {
         btnAdminLogout = findViewById(R.id.btnAdminLogout);
         db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
 
+        ImageButton btnFastAddStaff = findViewById(R.id.btnFastAddStaff);
+        if (btnFastAddStaff != null) {
+            btnFastAddStaff.setOnClickListener(v -> {
+                startActivity(new Intent(AdminDashboardActivity.this, AddStaffActivity.class));
+            });
+        }
+        
+        ImageButton btnFastAddService = findViewById(R.id.btnFastAddService);
+        if (btnFastAddService != null) {
+            btnFastAddService.setOnClickListener(v -> {
+                startActivity(new Intent(AdminDashboardActivity.this, AddServiceActivity.class));
+            });
+        }
         // Apply Entrance Animations
         applyEntranceAnimations();
 
@@ -244,11 +254,6 @@ public class AdminDashboardActivity extends BaseActivity {
                     if (tvTotalOrders != null) {
                         tvTotalOrders.setText(String.valueOf(totalOrders));
                     }
-                    
-                    // Update Breakdown
-                    if (tvStatusPending != null) tvStatusPending.setText(String.valueOf(pendingCount));
-                    if (tvStatusInService != null) tvStatusInService.setText(String.valueOf(inServiceCount));
-                    if (tvStatusCompleted != null) tvStatusCompleted.setText(String.valueOf(completedCount));
                     
                     if (totalOrders == 0) {
                         android.util.Log.w("AdminDashboard", "Database appears to be empty or collection name mismatch");

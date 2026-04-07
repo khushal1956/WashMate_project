@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@android:color/transparent"
     app:strokeColor="#1AFFFFFF"
     app:strokeWidth="1dp">
 
@@ -65,13 +66,26 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/btnCallCustomer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/glass_button_bg"
-            android:src="@drawable/ic_call"
-            app:tint="@color/white" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/btnMessageCustomer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/glass_button_bg"
+                android:src="@android:drawable/sym_action_email"
+                app:tint="@color/white"
+                android:layout_marginEnd="12dp"/>
+            <ImageButton
+                android:id="@+id/btnCallCustomer"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/glass_button_bg"
+                android:src="@drawable/ic_call"
+                app:tint="@color/white" />
+        </LinearLayout>
 
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

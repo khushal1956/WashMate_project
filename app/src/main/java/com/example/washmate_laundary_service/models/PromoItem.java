@@ -7,18 +7,22 @@ public class PromoItem {
     private String code;
     private double discountValue; // Value of discount
     private String discountType;  // "PERCENT" or "FLAT"
+    private double minOrderAmount;
+    private String expiryDate;
 
     public PromoItem() {
         // Required for Firestore
     }
 
-    public PromoItem(String id, String title, String description, String code, double discountValue, String discountType) {
+    public PromoItem(String id, String title, String description, String code, double discountValue, String discountType, double minOrderAmount, String expiryDate) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.code = code;
         this.discountValue = discountValue;
         this.discountType = discountType;
+        this.minOrderAmount = minOrderAmount;
+        this.expiryDate = expiryDate;
     }
 
     public String getId() { return id; }
@@ -33,5 +37,9 @@ public class PromoItem {
     public void setDiscountValue(double discountValue) { this.discountValue = discountValue; }
     public String getDiscountType() { return discountType; }
     public void setDiscountType(String discountType) { this.discountType = discountType; }
+    public double getMinOrderAmount() { return minOrderAmount; }
+    public void setMinOrderAmount(double minOrderAmount) { this.minOrderAmount = minOrderAmount; }
+    public String getExpiryDate() { return expiryDate; }
+    public void setExpiryDate(String expiryDate) { this.expiryDate = expiryDate; }
 }
 

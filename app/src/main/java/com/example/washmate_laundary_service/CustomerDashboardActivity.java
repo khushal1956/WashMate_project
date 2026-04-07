@@ -21,8 +21,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.example.washmate_laundary_service.utils.FirebaseConstants;
 import androidx.core.view.GravityCompat;
 import android.widget.ImageButton;
+import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
+import com.example.washmate_laundary_service.models.HowItWorksItem;
 
 
 public class CustomerDashboardActivity extends BaseActivity {
@@ -68,6 +70,16 @@ public class CustomerDashboardActivity extends BaseActivity {
 
     }
 
+    private androidx.viewpager2.widget.ViewPager2 vpHowItWorks;
+    private android.widget.LinearLayout layoutDots;
+    private List<com.example.washmate_laundary_service.models.HowItWorksItem> howItWorksList;
+    
+    // Active Orders Tracking
+    private View layoutTrackOrder;
+    private RecyclerView rvTrackOrders;
+    private TrackOrderAdapter trackOrderAdapter;
+    private List<com.example.washmate_laundary_service.models.Order> activeOrdersList;
+
     private void initializeViews() {
         tvGreeting = findViewById(R.id.tvGreeting);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -86,6 +98,22 @@ public class CustomerDashboardActivity extends BaseActivity {
         layoutPromoBadge = findViewById(R.id.layoutPromoBadge);
         layoutSpecialOfferHeader = findViewById(R.id.layoutSpecialOfferHeader);
 
+        // How it Works Slider
+        vpHowItWorks = findViewById(R.id.vpHowItWorks);
+        layoutDots = findViewById(R.id.layoutDots);
+        setupHowItWorksSlider();
+
+        // Active Orders Tracking
+        layoutTrackOrder = findViewById(R.id.layoutTrackOrder);
+        rvTrackOrders = findViewById(R.id.rvTrackOrders);
+        activeOrdersList = new ArrayList<>();
+        trackOrderAdapter = new TrackOrderAdapter(this, activeOrdersList);
+        rvTrackOrders.setAdapter(trackOrderAdapter);
+        
+        View btnViewAllOrders = findViewById(R.id.btnViewAllOrders);
+        if (btnViewAllOrders != null) {
+            btnViewAllOrders.setOnClickListener(v -> startActivity(new Intent(this, CustomerOrdersActivity.class)));
+        }
         
         if (layoutSpecialOfferHeader != null) {
             layoutSpecialOfferHeader.setVisibility(View.GONE);
@@ -110,8 +138,106 @@ public class CustomerDashboardActivity extends BaseActivity {
         
 
     
+        fetchActiveOrders();
     }
 
+    private void fetchActiveOrders() {
+        if (mAuth.getCurrentUser() == null) return;
+        String userId = mAuth.getCurrentUser().getUid();
+
+        mFirestore.collection("ORDERS")
+                .whereEqualTo("customerId", userId)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) return;
+                    if (value != null) {
+                        activeOrdersList.clear();
+                        for (DocumentSnapshot doc : value.getDocuments()) {
+                            com.example.washmate_laundary_service.models.Order order = doc.toObject(com.example.washmate_laundary_service.models.Order.class);
+                            if (order != null) {
+                                String status = order.getStatus();
+                                if (status != null && !status.equalsIgnoreCase("Completed") && !status.equalsIgnoreCase("Cancelled") && !status.equalsIgnoreCase("Delivered")) {
+                                    activeOrdersList.add(order);
+                                }
+                            }
+                        }
+                        
+                        if (!activeOrdersList.isEmpty()) {
+                            layoutTrackOrder.setVisibility(View.VISIBLE);
+                            trackOrderAdapter.notifyDataSetChanged();
+                        } else {
+                            layoutTrackOrder.setVisibility(View.GONE);
+                        }
+                    }
+                });
+    }
+    
+
+    private int currentSliderPos = 0;
+    private Handler sliderHandler = new Handler(Looper.getMainLooper());
+    private Runnable sliderRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (vpHowItWorks != null && howItWorksList != null && !howItWorksList.isEmpty()) {
+                currentSliderPos++;
+                if (currentSliderPos >= howItWorksList.size()) {
+                    currentSliderPos = 0;
+                }
+                vpHowItWorks.setCurrentItem(currentSliderPos, true);
+                sliderHandler.postDelayed(this, 3000); // 3 seconds
+            }
+        }
+    };
+
+    private void setupHowItWorksSlider() {
+        howItWorksList = new ArrayList<>();
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_1, "Book a Service", "Choose from our range of premium laundry and dry cleaning services."));
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_2, "Free Pickup", "Our delivery partner will arrive at your doorstep to collect your laundry."));
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_3, "Expert Care", "Your clothes are processed using state-of-the-art machines and premium detergents."));
+        howItWorksList.add(new com.example.washmate_laundary_service.models.HowItWorksItem(R.drawable.how_it_works_4, "Fast Delivery", "Fresh, clean, and neatly folded clothes delivered back to you within 24-48 hours."));
+
+        HowItWorksAdapter adapter = new HowItWorksAdapter(howItWorksList);
+        vpHowItWorks.setAdapter(adapter);
+
+        setupSliderIndicators(howItWorksList.size());
+
+        vpHowItWorks.registerOnPageChangeCallback(new androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                updateSliderIndicators(position);
+                currentSliderPos = position;
+                // Reset timer when manually changed
+                sliderHandler.removeCallbacks(sliderRunnable);
+                sliderHandler.postDelayed(sliderRunnable, 3000);
+            }
+        });
+
+        // Start auto-scroll
+        sliderHandler.postDelayed(sliderRunnable, 3000);
+    }
+
+    private void setupSliderIndicators(int size) {
+        ImageView[] dots = new ImageView[size];
+        layoutDots.removeAllViews();
+        for (int i = 0; i < size; i++) {
+            dots[i] = new ImageView(this);
+            dots[i].setImageDrawable(androidx.core.content.ContextCompat.getDrawable(this, R.drawable.dot_indicator));
+            android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(8, 0, 8, 0);
+            layoutDots.addView(dots[i], params);
+        }
+        if (dots.length > 0) dots[0].setSelected(true);
+    }
+
+    private void updateSliderIndicators(int position) {
+        int childCount = layoutDots.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            layoutDots.getChildAt(i).setSelected(i == position);
+        }
+    }
     
     private void setupDrawer() {
         navigationView.setNavigationItemSelectedListener(item -> {
@@ -238,5 +364,13 @@ public class CustomerDashboardActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         // No manual selection needed, setupBottomNavigation handles it
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (sliderHandler != null) {
+            sliderHandler.removeCallbacks(sliderRunnable);
+        }
     }
 }

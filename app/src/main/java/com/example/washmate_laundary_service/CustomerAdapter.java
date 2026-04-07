@@ -60,6 +60,19 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
                 Toast.makeText(v.getContext(), "Mobile number not available", Toast.LENGTH_SHORT).show();
             }
         });
+
+        if (holder.btnMessage != null) {
+            holder.btnMessage.setOnClickListener(v -> {
+                String phone = customer.getMobileNo();
+                if (phone != null && !phone.isEmpty()) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("sms:" + phone));
+                    v.getContext().startActivity(intent);
+                } else {
+                    Toast.makeText(v.getContext(), "Mobile number not available", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -70,7 +83,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
     static class CustomerViewHolder extends RecyclerView.ViewHolder {
         ShapeableImageView ivProfile;
         TextView tvName, tvEmail, tvMobile;
-        ImageButton btnCall;
+        ImageButton btnCall, btnMessage;
 
         public CustomerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,6 +92,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
             tvEmail = itemView.findViewById(R.id.tvCustomerEmail);
             tvMobile = itemView.findViewById(R.id.tvCustomerMobile);
             btnCall = itemView.findViewById(R.id.btnCallCustomer);
+            btnMessage = itemView.findViewById(R.id.btnMessageCustomer);
         }
     }
 }

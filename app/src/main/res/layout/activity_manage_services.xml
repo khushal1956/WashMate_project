@@ -55,6 +55,14 @@
                 android:textColor="#94A3B8"
                 android:textSize="12sp" />
         </LinearLayout>
+        
+        <ImageButton
+            android:id="@+id/fabAddService"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_glass_card"
+            android:src="@android:drawable/ic_input_add"
+            app:tint="#CBD5E1" />
     </LinearLayout>
 
     <!-- Service List -->
@@ -106,19 +114,5 @@
             android:textSize="14sp"
             android:textAlignment="center" />
     </LinearLayout>
-
-    <!-- Premium FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddService"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="24dp"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/stitch_primary"
-        app:tint="#0A0F14"
-        app:elevation="8dp"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

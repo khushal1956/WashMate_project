@@ -53,7 +53,23 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
         if (promo.getDiscountValue() > 0) {
             discountInfo = " (" + (int)promo.getDiscountValue() + ("PERCENT".equalsIgnoreCase(promo.getDiscountType()) ? "%" : "₹") + " OFF)";
         }
-        holder.tvDesc.setText(promo.getDescription() + discountInfo);
+        holder.tvDesc.setText((promo.getDescription() != null ? promo.getDescription() : "") + discountInfo);
+
+        String constraints = "";
+        if (promo.getMinOrderAmount() > 0) {
+            constraints += "Min: ₹" + (int) promo.getMinOrderAmount();
+        }
+        if (promo.getExpiryDate() != null && !promo.getExpiryDate().isEmpty()) {
+            if (!constraints.isEmpty()) constraints += " • ";
+            constraints += "Exp: " + promo.getExpiryDate();
+        }
+        
+        if (constraints.isEmpty()) {
+            holder.tvConstraints.setVisibility(View.GONE);
+        } else {
+            holder.tvConstraints.setVisibility(View.VISIBLE);
+            holder.tvConstraints.setText(constraints);
+        }
 
         holder.tvCode.setText(promo.getCode());
 
@@ -82,7 +98,7 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
     }
 
     static class PromoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDesc, tvCode;
+        TextView tvTitle, tvDesc, tvCode, tvConstraints;
         MaterialButton btnCopy;
         android.widget.ImageButton btnDelete;
 
@@ -91,6 +107,7 @@ public class PromosAdapter extends RecyclerView.Adapter<PromosAdapter.PromoViewH
             tvTitle = itemView.findViewById(R.id.tvPromoTitle);
             tvDesc = itemView.findViewById(R.id.tvPromoDesc);
             tvCode = itemView.findViewById(R.id.tvPromoCode);
+            tvConstraints = itemView.findViewById(R.id.tvPromoConstraints);
             btnCopy = itemView.findViewById(R.id.btnCopy);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

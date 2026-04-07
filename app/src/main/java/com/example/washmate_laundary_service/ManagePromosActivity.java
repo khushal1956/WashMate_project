@@ -41,7 +41,7 @@ public class ManagePromosActivity extends BaseActivity {
 
         rvPromoList = findViewById(R.id.rvPromoList);
         llEmptyState = findViewById(R.id.llEmptyState);
-        fabAddPromo = findViewById(R.id.fabAddPromo);
+        ImageButton btnAddPromo = findViewById(R.id.btnAddPromo);
         ImageButton btnBack = findViewById(R.id.btnBack);
 
         rvPromoList.setLayoutManager(new LinearLayoutManager(this));
@@ -57,8 +57,8 @@ public class ManagePromosActivity extends BaseActivity {
 
         if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
-        if (fabAddPromo != null) {
-            fabAddPromo.setOnClickListener(v -> showAddPromoDialog());
+        if (btnAddPromo != null) {
+            btnAddPromo.setOnClickListener(v -> showAddPromoDialog());
         }
 
         fetchPromos();
@@ -91,11 +91,13 @@ public class ManagePromosActivity extends BaseActivity {
         EditText etCode = view.findViewById(R.id.etPromoCode);
         EditText etDiscountValue = view.findViewById(R.id.etPromoDiscountValue);
         com.google.android.material.textfield.MaterialAutoCompleteTextView etDiscountType = view.findViewById(R.id.etPromoDiscountType);
+        EditText etMinOrder = view.findViewById(R.id.etPromoMinOrder);
+        EditText etExpiry = view.findViewById(R.id.etPromoExpiry);
 
         // Setup Dropdown
         String[] types = new String[]{"PERCENT", "FLAT"};
-        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, types);
-        etDiscountType.setAdapter(adapter);
+        android.widget.ArrayAdapter<String> dropdownAdapter = new android.widget.ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, types);
+        etDiscountType.setAdapter(dropdownAdapter);
 
 
         new AlertDialog.Builder(this, R.style.GlassDialogTheme)
@@ -107,18 +109,19 @@ public class ManagePromosActivity extends BaseActivity {
                     String code = etCode.getText().toString().trim();
                     String discountValStr = etDiscountValue.getText().toString().trim();
                     String discountType = etDiscountType.getText().toString().trim();
+                    String minOrderStr = etMinOrder.getText().toString().trim();
+                    String expiry = etExpiry.getText().toString().trim();
 
                     double discountValue = 0.0;
+                    double minOrder = 0.0;
                     try {
-                        if (!TextUtils.isEmpty(discountValStr)) {
-                            discountValue = Double.parseDouble(discountValStr);
-                        }
+                        if (!TextUtils.isEmpty(discountValStr)) discountValue = Double.parseDouble(discountValStr);
+                        if (!TextUtils.isEmpty(minOrderStr)) minOrder = Double.parseDouble(minOrderStr);
                     } catch (NumberFormatException ignored) {}
 
                     if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(code)) {
-                        savePromo(title, desc, code, discountValue, discountType);
+                        savePromo(title, desc, code, discountValue, discountType, minOrder, expiry);
                     } else {
-
                         Toast.makeText(this, "Title and Code are required", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -126,9 +129,9 @@ public class ManagePromosActivity extends BaseActivity {
                 .show();
     }
 
-    private void savePromo(String title, String desc, String code, double discountValue, String discountType) {
+    private void savePromo(String title, String desc, String code, double discountValue, String discountType, double minOrder, String expiry) {
         String id = db.collection(FirebaseConstants.COLLECTION_PROMOTIONS).document().getId();
-        PromoItem promo = new PromoItem(id, title, desc, code, discountValue, discountType);
+        PromoItem promo = new PromoItem(id, title, desc, code, discountValue, discountType, minOrder, expiry);
 
 
         db.collection(FirebaseConstants.COLLECTION_PROMOTIONS).document(id)

@@ -25,7 +25,7 @@ public class ManageStaffActivity extends BaseActivity implements StaffAdapter.On
     private FirebaseFirestore mFirestore;
     private LinearLayout llEmptyState;
     private ImageButton btnBack;
-    private FloatingActionButton fabAddStaff;
+    private View fabAddStaff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
