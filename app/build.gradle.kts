@@ -54,9 +54,8 @@ dependencies {
     implementation(libs.glide)
     annotationProcessor(libs.glide.compiler)
 
-    // JavaMail dependencies for Real-World OTP
-    implementation("com.sun.mail:android-mail:1.6.2")
-    implementation("com.sun.mail:android-activation:1.6.2")
+    implementation(libs.volley)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

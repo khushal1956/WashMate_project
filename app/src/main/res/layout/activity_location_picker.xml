@@ -4,37 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#0A0F14"
     tools:context=".LocationPickerActivity">
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!-- Center Marker (Uber Style) -->
+    <!-- Decorative Top Background -->
     <ImageView
-        android:id="@+id/ivCenterMarker"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:src="@drawable/ic_map_pin"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="24dp"
-        app:tint="@color/stitch_primary" />
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:src="@drawable/bg_gradient_primary"
+        android:scaleType="centerCrop"
+        android:alpha="0.3"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top Search/Back bar -->
+    <!-- Top Bar -->
     <LinearLayout
+        android:id="@+id/llTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical"
-        android:elevation="4dp"
+        android:padding="24dp"
         app:layout_constraintTop_toTopOf="parent">
-
         <ImageButton
             android:id="@+id/btnBack"
             android:layout_width="48dp"
@@ -42,70 +31,22 @@
             android:background="@drawable/circular_glass_bg"
             android:src="@drawable/ic_arrow_back_24dp"
             app:tint="@color/white" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/bg_glass_card"
-            android:backgroundTint="#E60F172A"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="16dp">
-            
-            <EditText
-                android:id="@+id/etSearchLocation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="Search live location..."
-                android:textColorHint="#94A3B8"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:imeOptions="actionSearch"
-                android:inputType="textPostalAddress"
-                android:maxLines="1" />
-                
-            <ImageView
-                android:id="@+id/btnSearch"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_search"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="4dp"
-                app:tint="@color/stitch_primary" />
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_gravity="center_vertical"
+            android:text="Pickup Address"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- My Location Button (Floating) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnMyLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="24dp"
-        app:backgroundTint="#0F172A"
-        app:tint="@color/stitch_primary"
-        app:borderWidth="1dp"
-        app:rippleColor="#333B82F6"
-        android:src="@drawable/ic_my_location"
-        app:layout_constraintBottom_toTopOf="@+id/bottomCard"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
-    <!-- Bottom Confirm Card -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bottomCard"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        app:cardCornerRadius="28dp"
-        app:cardBackgroundColor="#CC0F172A"
-        app:cardElevation="12dp"
-        app:strokeWidth="1.5dp"
-        app:strokeColor="#3394A3B8"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/llTopBar"
+        app:layout_constraintBottom_toTopOf="@id/btnConfirmLocation">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,58 +54,122 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-                <View
-                    android:layout_width="8dp"
-                    android:layout_height="8dp"
-                    android:background="@drawable/circular_glass_bg"
-                    android:backgroundTint="@color/stitch_primary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Select Order Location"
-                    android:textColor="#94A3B8"
-                    android:textSize="11sp"
-                    android:letterSpacing="0.1"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
-            </LinearLayout>
+            <!-- GPS Auto-Fetch Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnMyLocation"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/stitch_primary"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="32dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingHorizontal="24dp">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_my_location"
+                        app:tint="#0A0F14"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="Auto-Fetch Live GPS"
+                        android:textColor="#0A0F14"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
-                android:id="@+id/tvCurrentAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Fetching your address..."
-                android:textColor="@color/white"
-                android:textSize="17sp"
+                android:text="OR ENTER MANUALLY"
+                android:textColor="#64748B"
+                android:textSize="12sp"
+                android:gravity="center"
                 android:textStyle="bold"
-                android:lineSpacingExtra="4dp"
-                android:maxLines="3"
-                android:ellipsize="end" />
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="24dp"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConfirmLocation"
+            <!-- Form Fields -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Address"
+                android:textColor="#94A3B8"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+            <EditText
+                android:id="@+id/etAddress"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="24dp"
-                android:text="Confirm This Address"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                android:background="@drawable/bg_gradient_primary"
-                app:cornerRadius="18dp"
-                app:icon="@drawable/ic_check_circle"
-                app:iconGravity="textStart"
-                app:iconPadding="12dp" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#475569"
+                android:hint="House, Street, Area"
+                android:minLines="3"
+                android:gravity="top|start"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City"
+                android:textColor="#94A3B8"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+            <EditText
+                android:id="@+id/etCity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#475569"
+                android:hint="Surat"
+                android:inputType="text"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pincode"
+                android:textColor="#94A3B8"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+            <EditText
+                android:id="@+id/etPincode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_glass_card"
+                android:padding="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#475569"
+                android:hint="395007"
+                android:inputType="number"
+                android:maxLength="6"/>
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConfirmLocation"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="24dp"
+        android:text="Save Location"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/stitch_primary"
+        android:textColor="#0A0F14"
+        app:cornerRadius="16dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

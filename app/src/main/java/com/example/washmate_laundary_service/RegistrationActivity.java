@@ -389,7 +389,7 @@ public class RegistrationActivity extends BaseActivity {
         }
 
         String fullName = etFullName.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
+        String email = etEmail.getText().toString().trim().toLowerCase();
         String mobile = etMobile.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String city = etCity.getText().toString().trim();
@@ -477,12 +477,19 @@ public class RegistrationActivity extends BaseActivity {
         }
     }
 
-    private void navigateToHome() {
-        Intent intent = new Intent(RegistrationActivity.this, CustomerDashboardActivity.class);
+    private void navigateToLogin() {
+        // Sign out the user immediately after registration so they have to log in manually
+        if (mAuth != null) {
+            mAuth.signOut();
+        }
+        
+        Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
+
 
     private void saveAddressToFirestore(String userId, String addressText, String city, String pincode) {
         String addressId = mFirestore.collection(FirebaseConstants.COLLECTION_CUSTOMER_ADDRESSES).document().getId();
@@ -495,13 +502,13 @@ public class RegistrationActivity extends BaseActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(RegistrationActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
-                            navigateToHome();
+                            navigateToLogin();
                         } else {
                             // Even if address fails, the user is created, but we should notify
                             btnRegister.setEnabled(true);
                             btnRegister.setText("Register");
                             Toast.makeText(RegistrationActivity.this, "User created but failed to save address.", Toast.LENGTH_SHORT).show();
-                            navigateToHome(); // Still navigate since account exists
+                            navigateToLogin(); // Still navigate since account exists
                         }
                     }
                 });

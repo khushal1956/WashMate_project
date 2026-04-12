@@ -31,15 +31,19 @@ import java.util.List;
 public class StaffDashboardActivity extends BaseActivity {
 
     private TextView tvStaffName;
+    private TextView tvSectionTitle;
     private RecyclerView rvAssignedOrders;
     private LinearLayout llEmptyState;
     private ProgressBar progressBar;
     private ImageButton btnLogout;
+    private com.google.android.material.button.MaterialButton btnFilterAll;
     
     private StaffOrdersAdapter adapter;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
     private String currentStaffId;
+    private List<Order> allOrders = new ArrayList<>();
+    private boolean isShowingTodayOnly = true;
     private static final int PERMISSION_REQUEST_CODE = 101;
 
     @Override
@@ -105,10 +109,17 @@ public class StaffDashboardActivity extends BaseActivity {
 
     private void initializeViews() {
         tvStaffName = findViewById(R.id.tvStaffName);
+        tvSectionTitle = findViewById(R.id.tvSectionTitle);
         rvAssignedOrders = findViewById(R.id.rvAssignedOrders);
         llEmptyState = findViewById(R.id.llEmptyState);
         progressBar = findViewById(R.id.progressBar);
         btnLogout = findViewById(R.id.btnLogout);
+        btnFilterAll = findViewById(R.id.btnFilterAll);
+
+        btnFilterAll.setOnClickListener(v -> {
+            isShowingTodayOnly = !isShowingTodayOnly;
+            applyFilter();
+        });
 
         btnLogout.setOnClickListener(v -> {
             mAuth.signOut();
@@ -201,16 +212,35 @@ public class StaffDashboardActivity extends BaseActivity {
                 .whereEqualTo("assignedStaffId", currentStaffId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Order> orders = new ArrayList<>();
+                    allOrders.clear();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        orders.add(doc.toObject(Order.class));
+                        allOrders.add(doc.toObject(Order.class));
                     }
-                    displayOrders(orders);
+                    applyFilter();
                 })
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(this, "Error fetching assignments", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void applyFilter() {
+        if (isShowingTodayOnly) {
+            String today = new java.text.SimpleDateFormat("dd MMM yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+            List<Order> filtered = new ArrayList<>();
+            for (Order o : allOrders) {
+                if (today.equalsIgnoreCase(o.getPickupDate())) {
+                    filtered.add(o);
+                }
+            }
+            tvSectionTitle.setText("Today's Tasks");
+            btnFilterAll.setText("Show All");
+            displayOrders(filtered);
+        } else {
+            tvSectionTitle.setText("All Assignments");
+            btnFilterAll.setText("Today Only");
+            displayOrders(allOrders);
+        }
     }
 
     private void displayOrders(List<Order> orders) {
